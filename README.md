@@ -20,3 +20,6 @@ If you have any suggestions, feature requests, or ideas for what I should make n
 ## 📢 Coming Soon
 
 I’m currently building more websites using **React** and **Tailwind CSS** — stay tuned for my next jumble of files!
+
+
+"i think i accidentally cloned the same folder twice inside the mock websites folder so please ignore that"
