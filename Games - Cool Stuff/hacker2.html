@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Typer</title>
+    <style>
+        /* General Styling */
+        body {
+            margin: 0;
+            height: 100vh;
+            background: black; /* Pure black background */
+            color: lime; /* Default green text */
+            font-family: 'Courier New', Courier, monospace;
+            overflow-y: auto; /* Enable vertical scrolling */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to the top */
+            position: relative;
+        }
+
+        /* Flicker Effect */
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Code Container Styling */
+        #code-container {
+            width: 90%;
+            max-width: 1200px;
+            white-space: pre-wrap; /* Preserve line breaks and formatting */
+            word-wrap: break-word; /* Wrap long lines */
+            font-size: 1rem;
+            line-height: 1.5;
+            animation: flicker 0.5s infinite alternate; /* Add subtle flickering */
+        }
+
+        /* Hidden Characters */
+        .hidden {
+            color: black; /* Hidden text (invisible) */
+        }
+
+        /* Red Text for Transition */
+        .red {
+            color: red; /* Red text for transition */
+        }
+
+        /* Matrix Rain Background */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place behind the code */
+            pointer-events: none; /* Ensure it doesn't block interactions */
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrix-rain"></canvas>
+
+    <!-- Code Container -->
+    <div id="code-container"></div>
+
+    <!-- Optional Eerie Sound -->
+    <audio id="eerie-sound" loop>
+        <source src="https://www.soundjay.com/misc/sounds/scary-ambience-01.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Advanced C++ code for SQL Injection Prevention (NO COMMENTS)
+        const fullCode = `#include <iostream>\n#include <string>\n#include <regex>\n#include <vector>\n\nusing namespace std;\n\nbool isSafeInput(const string& input) {\n    regex sqlPattern("(DROP|DELETE|INSERT|UPDATE|UNION|SELECT|EXEC|OR|AND|--|#)", regex_constants::icase);\n    return !regex_search(input, sqlPattern);\n}\n\nvector<string> validateInputs(const vector<string>& inputs) {\n    vector<string> safeInputs;\n    for (const auto& input : inputs) {\n        if (isSafeInput(input)) {\n            safeInputs.push_back(input);\n        } else {\n            cout << "Unsafe input detected: " << input << endl;\n        }\n    }\n    return safeInputs;\n}\n\nint main() {\n    vector<string> userInputs;\n    string userInput;\n\n    cout << "Enter inputs (type 'done' to finish):\\n";\n    while (true) {\n        getline(cin, userInput);\n        if (userInput == "done") {\n            break;\n        }\n        userInputs.push_back(userInput);\n    }\n\n    vector<string> safeInputs = validateInputs(userInputs);\n\n    cout << "\\nSafe Inputs:\\n";\n    for (const auto& input : safeInputs) {\n        cout << input << endl;\n    }\n\n    return 0;\n}`;
+
+        let currentIndex = 0; // Tracks the current position in the fullCode string
+        let autoTypingInterval = null; // Tracks the interval for auto-typing
+        let hasDownloaded = false; // Ensures only one download happens
+        let typingSpeed = 50; // Initial typing speed in milliseconds
+
+        // Initialize the container with hidden characters
+        const codeContainer = document.getElementById('code-container');
+        codeContainer.innerHTML = fullCode.split('').map(() => `<span class="hidden">_</span>`).join('');
+
+        // Function to handle key presses
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+
+            // Shortcut: Start auto-typing when pressing '1' on the numpad
+            if (key === "1" && event.location === 3) { // Numpad 1
+                startAutoTyping();
+                return;
+            }
+
+            // Shortcut: Stop auto-typing when pressing '0' on the numpad
+            if (key === "0" && event.location === 3) { // Numpad 0
+                stopAutoTyping();
+                return;
+            }
+
+            // Shortcut: Increase typing speed with '+' on the numpad
+            if (key === "+" && event.location === 3) { // Numpad +
+                typingSpeed = Math.max(10, typingSpeed - 10); // Decrease interval, min 10ms
+                if (autoTypingInterval) {
+                    stopAutoTyping();
+                    startAutoTyping(); // Restart with new speed
+                }
+                return;
+            }
+
+            // Shortcut: Decrease typing speed with '-' on the numpad
+            if (key === "-" && event.location === 3) { // Numpad -
+                typingSpeed += 10; // Increase interval
+                if (autoTypingInterval) {
+                    stopAutoTyping();
+                    startAutoTyping(); // Restart with new speed
+                }
+                return;
+            }
+
+            // Manual typing mode
+            if (!autoTypingInterval && currentIndex < fullCode.length) {
+                revealNextCharacter();
+            }
+
+            // If the code is fully revealed, start the green-to-red transition
+            if (currentIndex === fullCode.length) {
+                stopAutoTyping(); // Ensure auto-typing stops
+                setTimeout(startGreenToRedTransition, 500); // Start transition after a short delay
+            }
+        });
+
+        // Function to reveal the next character
+        function revealNextCharacter() {
+            if (currentIndex < fullCode.length) {
+                codeContainer.children[currentIndex].textContent = fullCode[currentIndex];
+                codeContainer.children[currentIndex].classList.remove('hidden');
+                currentIndex++;
+                scrollToBottom(); // Auto-scroll to the bottom
+            }
+        }
+
+        // Function to start auto-typing
+        function startAutoTyping() {
+            if (autoTypingInterval) return; // Prevent multiple intervals
+            autoTypingInterval = setInterval(() => {
+                if (currentIndex < fullCode.length) {
+                    revealNextCharacter();
+                } else {
+                    stopAutoTyping(); // Stop auto-typing when done
+                }
+            }, typingSpeed); // Use the current typing speed
+        }
+
+        // Function to stop auto-typing
+        function stopAutoTyping() {
+            if (autoTypingInterval) {
+                clearInterval(autoTypingInterval);
+                autoTypingInterval = null;
+            }
+        }
+
+        // Function to scroll to the bottom of the page
+        function scrollToBottom() {
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        // Function to transition text from green to red
+        function startGreenToRedTransition() {
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= codeContainer.children.length) {
+                    clearInterval(interval);
+                    if (!hasDownloaded) {
+                        generateDownloadableFile(); // Generate the file after the transition
+                        hasDownloaded = true; // Mark as downloaded
+                    }
+                } else {
+                    codeContainer.children[index].classList.add('red');
+                    index++;
+                }
+            }, 50); // Change one character every 50ms
+
+            // Turn Matrix rain red during the transition
+            isMatrixRed = true;
+        }
+
+        // Function to generate a downloadable .cpp file (only once)
+        function generateDownloadableFile() {
+            const blob = new Blob([fullCode], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+
+            // Create a temporary anchor element for downloading
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'code.cpp'; // File name
+            a.style.display = 'none';
+
+            // Append the anchor to the body and trigger the download
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Display instructions for running the code locally
+            alert("The file 'code.cpp' has been downloaded.\n\nTo run it locally:\n1. Open a terminal.\n2. Navigate to the folder where the file was saved.\n3. Compile the code using: g++ code.cpp -o code\n4. Run the program using: ./code");
+        }
+
+        // Matrix Rain Effect
+        const canvas = document.getElementById('matrix-rain');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const columns = Math.floor(canvas.width / 20);
+        const drops = Array(columns).fill(1);
+        let isMatrixRed = false; // Tracks whether the Matrix rain should be red
+
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Faster fade-out for speed
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = isMatrixRed ? 'red' : '#0F0'; // Neon green or red color
+            ctx.font = '16px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = String.fromCharCode(Math.random() * 128 + 33); // Random ASCII characters
+                ctx.fillText(text, i * 20, drops[i] * 20 + window.scrollY); // Adjust for scroll position
+
+                if (drops[i] * 20 > canvas.height + window.scrollY && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrixRain, 30); // Faster interval for speed
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Optional: Play eerie sound
+        const eerieSound = document.getElementById('eerie-sound');
+        eerieSound.volume = 0.3; // Adjust volume
+        eerieSound.play();
+    </script>
+</body>
+</html>

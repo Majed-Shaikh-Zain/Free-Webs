@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>Luxury Clock Application</title>
+  <style>
+    /* Base styles */
+    :root {
+  --background: 300 50% 10%; /* Dark background */
+  --foreground: 300 30% 95%; /* Light foreground for contrast */
+  --primary: 330 60% 40%; /* Slightly brighter primary color */
+  --primary-foreground: 0 0% 100%; /* White text on primary */
+  --secondary: 300 50% 20%; /* Darker secondary background */
+  --secondary-foreground: 300 30% 90%; /* Lighter text on secondary */
+  --muted: 300 50% 15%; /* Even darker muted background */
+  --muted-foreground: 300 30% 80%; /* Lighter muted text */
+  --border: 300 50% 30%; /* Subtle border color */
+  --shadow: 300 50% 10% / 0.4; /* Deeper shadow for dark theme */
+  --accent: 30 60% 40%; /* Slightly brighter accent */
+  --accent-glow: 30 60% 40% / 0.3; /* Accent glow effect */
+  --gold: 30 60% 50%; /* Gold tone adjusted for dark theme */
+  --gold-glow: 30 60% 50% / 0.2; /* Gold glow effect */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: 300 50% 95%; /* Light background */
+    --foreground: 300 30% 10%; /* Dark foreground for contrast */
+    --primary: 330 60% 60%; /* Bright primary color */
+    --primary-foreground: 0 0% 100%; /* White text on primary */
+    --secondary: 300 50% 90%; /* Light secondary background */
+    --secondary-foreground: 300 30% 10%; /* Dark text on secondary */
+    --muted: 300 50% 85%; /* Light muted background */
+    --muted-foreground: 300 30% 40%; /* Darker muted text */
+    --border: 300 50% 80%; /* Subtle border color */
+    --shadow: 300 50% 50% / 0.2; /* Light shadow for light theme */
+    --accent: 30 60% 60%; /* Bright accent */
+    --accent-glow: 30 60% 60% / 0.25; /* Accent glow effect */
+    --gold: 30 60% 60%; /* Gold tone adjusted for light theme */
+    --gold-glow: 30 60% 60% / 0.2; /* Gold glow effect */
+  }
+}
+    
+    /* Add clock hands effect */
+    #main-clock {
+      position: relative;
+    }
+    
+    #main-clock::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(90deg, transparent 49.8%, hsl(var(--gold) / 0.03) 49.9%, hsl(var(--gold) / 0.03) 50.1%, transparent 50.2%),
+        linear-gradient(0deg, transparent 49.8%, hsl(var(--gold) / 0.03) 49.9%, hsl(var(--gold) / 0.03) 50.1%, transparent 50.2%);
+      border-radius: 50%;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 1;
+      animation: rotateHands 60s linear infinite;
+    }
+    
+    @keyframes rotateHands {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: 
+        radial-gradient(ellipse at top, hsl(var(--background)), hsl(var(--background) / 0.85)),
+        linear-gradient(to bottom, hsl(var(--background)), hsl(var(--background) / 0.9)),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      color: hsl(var(--foreground));
+      min-height: 100vh;
+      padding: 1.5rem;
+      line-height: 1.5;
+      transition: background-color 0.3s ease;
+      position: relative;
+    }
+    
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 20%, hsl(var(--gold) / 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 80% 80%, hsl(var(--primary) / 0.08) 0%, transparent 25%);
+      pointer-events: none;
+    }
+
+    /* Luxury Components */
+    .card {
+      background-color: hsl(var(--background) / 0.7);
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--gold) / 0.3);
+      box-shadow: 0 20px 50px -15px hsl(var(--shadow)),
+                  0 10px 20px -5px hsl(var(--shadow) / 0.2),
+                  0 1px 3px hsl(var(--shadow)),
+                  0 0 0 1px hsl(var(--border)),
+                  inset 0 0 30px hsl(var(--gold-glow) / 0.05);
+      backdrop-filter: blur(12px);
+      max-width: 68rem;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, 
+        hsl(var(--primary)), 
+        hsl(var(--gold)),
+        hsl(var(--accent)),
+        hsl(var(--gold)),
+        hsl(var(--primary)));
+      background-size: 200% 100%;
+      animation: shimmer 6s infinite linear;
+      z-index: 1;
+      box-shadow: 0 0 15px 1px hsl(var(--gold-glow));
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: 0 0; }
+    }
+
+    .p-6 {
+      padding: 2rem;
+    }
+
+    .clock-card {
+      background: linear-gradient(135deg, 
+        hsl(var(--primary) / 0.03) 0%, 
+        hsl(var(--primary) / 0.07) 50%,
+        hsl(var(--primary) / 0.05) 100%);
+      border: 1px solid hsl(var(--gold) / 0.2);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 25px -15px hsl(var(--shadow)),
+                  0 0 0 1px hsl(var(--border)),
+                  inset 0 0 40px hsl(var(--gold-glow) / 0.03);
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .clock-card::before {
+      content: "";
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, 
+        transparent 30%, 
+        hsl(var(--gold) / 0.1) 45%, 
+        hsl(var(--gold) / 0.2) 50%, 
+        hsl(var(--gold) / 0.1) 55%, 
+        transparent 70%);
+      z-index: -1;
+      background-size: 200% 200%;
+      animation: borderGlow 6s ease infinite;
+      border-radius: var(--radius);
+      opacity: 0.7;
+    }
+    
+    @keyframes borderGlow {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+    
+
+    .clock-card::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at center, 
+                  hsl(var(--accent-glow)) 0%, 
+                  transparent 65%);
+      opacity: 0.35;
+      transform: rotate(-30deg);
+      pointer-events: none;
+    }
+
+    .time-display {
+      font-family: var(--font-mono);
+      font-size: 5rem;
+      font-weight: 700;
+      color: hsl(var(--primary));
+      letter-spacing: 0.1em;
+      line-height: 1;
+      text-shadow: 0 2px 10px hsl(var(--primary) / 0.15),
+                   0 0 20px hsl(var(--gold-glow) / 0.3);
+      position: relative;
+      background: linear-gradient(to right, 
+        hsl(var(--primary)), 
+        hsl(var(--gold)), 
+        hsl(var(--accent)), 
+        hsl(var(--gold)), 
+        hsl(var(--primary)));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: textShimmer 8s linear infinite;
+      padding: 0.5rem 0;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .time-display::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(to right, 
+        transparent, 
+        hsl(var(--gold) / 0.3), 
+        transparent);
+    }
+
+    @keyframes textShimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @media (min-width: 768px) {
+      .time-display {
+        font-size: 6.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .time-display {
+        font-size: 8rem;
+      }
+    }
+
+    .date-display {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: hsl(var(--muted-foreground));
+      font-weight: 400;
+      margin-top: 1rem;
+      letter-spacing: 0.05em;
+      font-style: italic;
+      opacity: 0.9;
+      position: relative;
+      display: inline-block;
+      padding: 0 1.5rem;
+    }
+    
+    .date-display::before,
+    .date-display::after {
+      content: "•";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: hsl(var(--gold));
+      font-style: normal;
+      opacity: 0.7;
+    }
+    
+    .date-display::before {
+      left: 0;
+    }
+    
+    .date-display::after {
+      right: 0;
+    }
+
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-top: 2rem;
+      position: relative;
+      padding: 0.5rem 1rem;
+      background-color: hsl(var(--secondary) / 0.6);
+      border-radius: 2rem;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .switch-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      user-select: none;
+    }
+
+    .switch {
+      position: relative;
+      width: 46px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: hsl(var(--secondary));
+      transition: .4s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 34px;
+      box-shadow: inset 0 1px 3px hsl(var(--shadow));
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 6px hsl(var(--shadow));
+    }
+
+    input:checked + .slider {
+      background-color: hsl(var(--primary));
+    }
+
+    input:focus + .slider {
+      box-shadow: inset 0 1px 3px hsl(var(--shadow)), 
+                  0 0 0 2px hsl(var(--primary) / 0.3);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .tabs {
+      margin-top: 3rem;
+    }
+
+    .tabs-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding: 0.5rem;
+      background-color: hsl(var(--secondary) / 0.6);
+      border-radius: var(--radius);
+    }
+
+    .tab-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      background-color: transparent;
+      border: none;
+      border-radius: calc(var(--radius) - 0.25rem);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .tab-trigger svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .tab-trigger:hover svg {
+      transform: scale(1.1);
+    }
+
+    .tab-trigger[aria-selected="true"] {
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      box-shadow: 0 2px 10px -2px hsl(var(--shadow));
+    }
+
+    .tab-trigger[aria-selected="true"] svg {
+      color: hsl(var(--primary));
+    }
+
+    .tab-trigger::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background-color: hsl(var(--accent));
+      transition: width 0.2s ease;
+    }
+
+    .tab-trigger[aria-selected="true"]::after {
+      width: 50%;
+    }
+
+    .tab-trigger:hover:not([aria-selected="true"]) {
+      background-color: hsl(var(--secondary));
+      color: hsl(var(--foreground));
+    }
+
+    .tab-content {
+      padding: 1.75rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, 
+        hsl(var(--secondary) / 0.7), 
+        hsl(var(--secondary) / 0.3));
+      box-shadow: 0 4px 20px -5px hsl(var(--shadow));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tab-content::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, 
+                hsl(var(--gold) / 0.1), 
+                hsl(var(--primary) / 0.05) 30%,
+                transparent 70%);
+      pointer-events: none;
+      opacity: 0.7;
+      animation: glow 10s ease-in-out infinite alternate;
+    }
+    
+    @keyframes glow {
+      0% { opacity: 0.3; background-position: 0% 0%; }
+      50% { opacity: 0.7; background-position: 100% 100%; }
+      100% { opacity: 0.3; background-position: 0% 0%; }
+    }
+
+    .tab-content[hidden] {
+      display: none;
+    }
+
+    /* Form elements */
+    .input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      background-color: hsl(var(--background) / 0.8);
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      color: hsl(var(--foreground));
+      box-shadow: inset 0 1px 3px hsl(var(--shadow) / 0.15);
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: hsl(var(--primary) / 0.6);
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2),
+                  inset 0 1px 3px hsl(var(--shadow) / 0.15);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      padding: 0.75rem 1.25rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+      background-repeat: no-repeat;
+      background-position: 50%;
+      transform: scale(10, 10);
+      opacity: 0;
+      transition: transform 0.5s, opacity 0.8s;
+    }
+
+    .button:active::after {
+      transform: scale(0, 0);
+      opacity: 0.3;
+      transition: 0s;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+      margin-right: 0.5rem;
+    }
+
+    .button-primary {
+      background: linear-gradient(to bottom, 
+        hsl(var(--primary)), 
+        hsl(var(--primary) / 0.85));
+      color: hsl(var(--primary-foreground));
+      border: 1px solid transparent;
+      box-shadow: 0 4px 12px -2px hsl(var(--primary) / 0.3),
+                  0 0 0 1px hsl(var(--primary) / 0.4),
+                  inset 0 1px 0 hsl(var(--primary-foreground) / 0.1);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .button-primary::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        transparent, 
+        hsl(var(--primary-foreground) / 0.2), 
+        transparent);
+      transition: all 0.5s ease;
+      z-index: -1;
+    }
+    
+    .button-primary:hover {
+      background: linear-gradient(to bottom, 
+        hsl(var(--primary) / 0.9), 
+        hsl(var(--primary) / 0.75));
+      box-shadow: 0 6px 16px -2px hsl(var(--primary) / 0.4),
+                  0 0 0 1px hsl(var(--primary) / 0.5),
+                  inset 0 1px 0 hsl(var(--primary-foreground) / 0.15);
+      transform: translateY(-1px);
+    }
+    
+    .button-primary:hover::before {
+      left: 100%;
+    }
+    
+    .button-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px -2px hsl(var(--primary) / 0.3);
+    }
+
+    .button-outline {
+      background-color: transparent;
+      color: hsl(var(--foreground));
+      border: 1px solid hsl(var(--border));
+      box-shadow: 0 2px 6px -2px hsl(var(--shadow) / 0.15);
+    }
+
+    .button-outline:hover {
+      background-color: hsl(var(--secondary));
+      border-color: hsl(var(--border));
+      box-shadow: 0 4px 12px -4px hsl(var(--shadow) / 0.3);
+      transform: translateY(-1px);
+    }
+
+    .button-outline:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 3px -1px hsl(var(--shadow) / 0.2);
+    }
+
+    .button-destructive {
+      background: linear-gradient(to right, hsl(0, 84%, 60%), hsl(10, 90%, 55%));
+      color: white;
+      border: 1px solid transparent;
+      box-shadow: 0 4px 12px -2px hsl(0, 84%, 60% / 0.3),
+                  0 0 0 1px hsl(0, 84%, 60% / 0.4);
+    }
+
+    .button-destructive:hover {
+      background: linear-gradient(to right, hsl(0, 84%, 55%), hsl(10, 90%, 50%));
+      box-shadow: 0 6px 16px -2px hsl(0, 84%, 60% / 0.4),
+                  0 0 0 1px hsl(0, 84%, 60% / 0.5);
+      transform: translateY(-1px);
+    }
+
+    .button-destructive:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 6px -2px hsl(0, 84%, 60% / 0.3);
+    }
+
+    .button-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: calc(var(--radius) - 0.25rem);
+    }
+
+    .button:disabled, .button[aria-disabled="true"] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .justify-between {
+      justify-content: space-between;
+    }
+
+    .gap-2 {
+      gap: 0.75rem;
+    }
+
+    .space-y-2 > * + * {
+      margin-top: 0.75rem;
+    }
+
+    .space-y-4 > * + * {
+      margin-top: 1.25rem;
+    }
+
+    .space-y-6 > * + * {
+      margin-top: 1.75rem;
+    }
+
+    .select-container {
+      position: relative;
+      width: 240px;
+      margin: 0 auto;
+    }
+
+    .select {
+      width: 100%;
+      padding: 0.75rem 2.5rem 0.75rem 1rem;
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      background-color: hsl(var(--background) / 0.8);
+      font-size: 0.95rem;
+      font-family: var(--font-sans);
+      color: hsl(var(--foreground));
+      appearance: none;
+      cursor: pointer;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 5px -2px hsl(var(--shadow) / 0.15);
+    }
+
+    .select:focus {
+      outline: none;
+      border-color: hsl(var(--primary) / 0.6);
+      box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2),
+                  0 2px 5px -2px hsl(var(--shadow) / 0.15);
+    }
+
+    .select-container::after {
+      content: "▼";
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.7rem;
+      color: hsl(var(--primary));
+      transition: transform 0.2s ease;
+    }
+
+    .select-container:hover::after {
+      transform: translateY(-50%) translateY(1px);
+    }
+
+    .world-clock, .alarm-item, .p-2 {
+      padding: 0.75rem;
+    }
+
+    .rounded-md {
+      border-radius: var(--radius);
+    }
+
+    .bg-primary-5 {
+      background-color: hsl(var(--background) / 0.6);
+      backdrop-filter: blur(4px);
+      border: 1px solid hsl(var(--border));
+      box-shadow: 0 2px 6px -2px hsl(var(--shadow) / 0.2);
+    }
+
+    .font-mono {
+      font-family: var(--font-mono);
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .toast {
+      background-color: hsl(var(--background) / 0.95);
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: 0 10px 30px -5px hsl(var(--shadow)),
+                  0 0 0 1px hsl(var(--border));
+      backdrop-filter: blur(12px);
+      animation: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 380px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .toast::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(to bottom, hsl(var(--primary)), hsl(var(--accent)));
+    }
+
+    @keyframes slide-in {
+      from {
+        transform: translateX(calc(100% + 1.5rem));
+        opacity: 0;
+      }
+      to {
+                transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .toast-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      color: hsl(var(--foreground));
+    }
+
+    .toast-description {
+      font-size: 0.875rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    .toast-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: hsl(var(--muted-foreground));
+      transition: color 0.2s ease;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .toast-close:hover {
+      color: hsl(var(--foreground));
+      background-color: hsl(var(--secondary));
+    }
+
+    /* Add some subtle animations */
+    @keyframes pulse {
+      0% { opacity: 0.8; }
+      50% { opacity: 1; }
+      100% { opacity: 0.8; }
+    }
+
+    .card {
+      animation: subtle-float 10s ease-in-out infinite;
+    }
+
+    @keyframes subtle-float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+
+      .p-6 {
+        padding: 1.5rem;
+      }
+
+      .clock-card {
+        padding: 2rem 1rem;
+      }
+
+      .tabs-list {
+        gap: 0.5rem;
+      }
+
+      .tab-trigger {
+        padding: 0.5rem;
+      }
+
+      .tab-content {
+        padding: 1.25rem;
+      }
+    }
+
+    /* Hide text on small screens */
+    @media (max-width: 768px) {
+      .hidden-mobile {
+        display: none;
+      }
+    }
+
+    /* Glass morphism specifics */
+    @supports (backdrop-filter: blur(12px)) {
+      .card, .toast, .tab-content, .bg-primary-5 {
+        backdrop-filter: blur(12px);
+      }
+    }
+
+    /* Luxury scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: hsl(var(--secondary));
+      border-radius: 4px;
+      box-shadow: inset 0 0 2px hsl(var(--shadow) / 0.3);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, 
+        hsl(var(--primary) / 0.5), 
+        hsl(var(--gold) / 0.5));
+      border-radius: 4px;
+      border: 1px solid hsl(var(--background) / 0.1);
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(to bottom, 
+        hsl(var(--primary) / 0.7), 
+        hsl(var(--gold) / 0.7));
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="p-6">
+      <!-- Main Clock -->
+      <div id="main-clock" class="clock-card">
+        <div id="time-display" class="time-display">00:00:00</div>
+        <div id="date-display" class="date-display">Loading...</div>
+        <div class="switch-container">
+          <span class="switch-label">24-hour format</span>
+          <label class="switch">
+            <input type="checkbox" id="format-toggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tabs-list" role="tablist">
+          <button class="tab-trigger" role="tab" aria-selected="true" id="tab-world" aria-controls="panel-world">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <span class="hidden-mobile">World Clock</span>
+          </button>
+          <button class="tab-trigger" role="tab" aria-selected="false" id="tab-alarm" aria-controls="panel-alarm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            <span class="hidden-mobile">Alarm</span>
+          </button>
+          <button class="tab-trigger" role="tab" aria-selected="false" id="tab-stopwatch" aria-controls="panel-stopwatch">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"></circle><polyline points="12 9 12 12 13.5 13.5"></polyline><path d="M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.83a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 0 1 9.83 1h4.35a2 2 0 0 1 2 1.82l.35 3.83"></path></svg>
+            <span class="hidden-mobile">Stopwatch</span>
+          </button>
+          <button class="tab-trigger" role="tab" aria-selected="false" id="tab-timer" aria-controls="panel-timer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4"></path><path d="M12 14v-4"></path><path d="M4 13a8 8 0 0 1 8-7 8 8 0 1 1-5.3 14L4 17.6"></path><path d="M9 17H4v5"></path></svg>
+            <span class="hidden-mobile">Timer</span>
+          </button>
+        </div>
+
+        <!-- World Clock Tab -->
+        <div id="panel-world" role="tabpanel" aria-labelledby="tab-world" class="tab-content">
+          <div class="select-container">
+            <select id="timezone-select" class="select">
+              <option value="America/New_York">New York</option>
+              <option value="America/Los_Angeles">Los Angeles</option>
+              <option value="Europe/London">London</option>
+              <option value="Europe/Paris">Paris</option>
+              <option value="Asia/Tokyo">Tokyo</option>
+              <option value="Asia/Dubai">Dubai</option>
+              <option value="Australia/Sydney">Sydney</option>
+            </select>
+          </div>
+
+          <div class="time-display flex justify-center items-center" id="world-time">00:00:00</div>
+          <div class="date-display flex justify-center items-center" id="world-date">Loading...</div>
+        </div>
+
+        <!-- Alarm Tab -->
+        <div id="panel-alarm" role="tabpanel" aria-labelledby="tab-alarm" class="tab-content" hidden>
+          <div class="flex gap-2">
+            <input type="time" id="alarm-input" class="input" />
+            <button id="add-alarm" class="button button-primary">Add Alarm</button>
+          </div>
+
+          <div id="alarms-container" class="space-y-2 mt-4"></div>
+        </div>
+
+        <!-- Stopwatch Tab -->
+        <div id="panel-stopwatch" role="tabpanel" aria-labelledby="tab-stopwatch" class="tab-content" hidden>
+          <div class="space-y-4">
+            <div class="time-display flex justify-center items-center" id="stopwatch-display">00:00.00</div>
+
+            <div class="flex justify-center gap-2">
+              <button id="stopwatch-start" class="button button-primary">Start</button>
+              <button id="stopwatch-stop" class="button button-primary" disabled>Stop</button>
+              <button id="stopwatch-reset" class="button button-outline">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timer Tab -->
+        <div id="panel-timer" role="tabpanel" aria-labelledby="tab-timer" class="tab-content" hidden>
+          <div class="space-y-4">
+            <div class="flex gap-2">
+              <input type="number" id="timer-minutes" class="input" placeholder="Minutes" min="0" />
+              <button id="timer-start" class="button button-primary">Start</button>
+            </div>
+
+            <div class="time-display flex justify-center items-center" id="timer-display">00:00</div>
+
+            <div class="flex justify-center gap-2">
+              <button id="timer-pause" class="button button-primary" disabled>Pause</button>
+              <button id="timer-resume" class="button button-primary" disabled>Resume</button>
+              <button id="timer-reset" class="button button-outline">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container"></div>
+
+  <script>
+    // Utility functions
+    function format(date, formatStr) {
+      const options = {};
+      
+      if (formatStr.includes('HH') || formatStr.includes('hh')) {
+        options.hour = '2-digit';
+        options.hour12 = formatStr.includes('hh');
+      }
+      
+      if (formatStr.includes('mm')) {
+        options.minute = '2-digit';
+      }
+      
+      if (formatStr.includes('ss')) {
+        options.second = '2-digit';
+      }
+      
+      if (formatStr.includes('a')) {
+        options.hour12 = true;
+      }
+      
+      if (formatStr.includes('EEEE')) {
+        options.weekday = 'long';
+      }
+      
+      if (formatStr.includes('MMMM')) {
+        options.month = 'long';
+      }
+      
+      if (formatStr.includes('d')) {
+        options.day = 'numeric';
+      }
+      
+      if (formatStr.includes('yyyy')) {
+        options.year = 'numeric';
+      }
+      
+      return new Intl.DateTimeFormat('en-US', options).format(date);
+    }
+
+    function formatWithTimeZone(date, formatStr, timeZone) {
+      const options = {
+        timeZone: timeZone
+      };
+      
+      if (formatStr.includes('HH') || formatStr.includes('hh')) {
+        options.hour = '2-digit';
+        options.hour12 = formatStr.includes('hh');
+      }
+      
+      if (formatStr.includes('mm')) {
+        options.minute = '2-digit';
+      }
+      
+      if (formatStr.includes('ss')) {
+        options.second = '2-digit';
+      }
+      
+      if (formatStr.includes('a')) {
+        options.hour12 = true;
+      }
+      
+      if (formatStr.includes('EEEE')) {
+        options.weekday = 'long';
+      }
+      
+      if (formatStr.includes('MMMM')) {
+        options.month = 'long';
+      }
+      
+      if (formatStr.includes('d')) {
+        options.day = 'numeric';
+      }
+      
+      if (formatStr.includes('yyyy')) {
+        options.year = 'numeric';
+      }
+      
+      return new Intl.DateTimeFormat('en-US', options).format(date);
+    }
+
+    // Toast system
+    const toastContainer = document.getElementById('toast-container');
+    const toasts = [];
+
+    function showToast({ title, description, duration = 3000 }) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `
+        <div class="toast-title">${title}</div>
+        ${description ? `<div class="toast-description">${description}</div>` : ''}
+        <button class="toast-close">&times;</button>
+      `;
+      
+      toastContainer.appendChild(toast);
+      toasts.push(toast);
+      
+      const closeBtn = toast.querySelector('.toast-close');
+      closeBtn.addEventListener('click', () => {
+        toast.remove();
+        const index = toasts.indexOf(toast);
+        if (index !== -1) {
+          toasts.splice(index, 1);
+        }
+      });
+      
+      setTimeout(() => {
+        toast.remove();
+        const index = toasts.indexOf(toast);
+        if (index !== -1) {
+          toasts.splice(index, 1);
+        }
+      }, duration);
+    }
+
+    // Tab system
+    const tabTriggers = document.querySelectorAll('.tab-trigger');
+    const tabPanels = document.querySelectorAll('[role="tabpanel"]');
+
+    tabTriggers.forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        // Update aria-selected
+        tabTriggers.forEach(t => t.setAttribute('aria-selected', 'false'));
+        trigger.setAttribute('aria-selected', 'true');
+        
+        // Show the corresponding panel
+        const panelId = trigger.getAttribute('aria-controls');
+        tabPanels.forEach(panel => {
+          panel.hidden = panel.id !== panelId;
+        });
+      });
+    });
+
+    // Main Clock
+    const timeDisplay = document.getElementById('time-display');
+    const dateDisplay = document.getElementById('date-display');
+    const formatToggle = document.getElementById('format-toggle');
+    
+    function updateMainClock() {
+      const now = new Date();
+      const is24Hour = formatToggle.checked;
+      
+      timeDisplay.textContent = format(now, is24Hour ? 'HH:mm:ss' : 'hh:mm:ss');
+      if (!is24Hour) {
+        const ampm = document.createElement('span');
+        ampm.textContent = format(now, 'a');
+        ampm.style.fontSize = '2rem';
+        ampm.style.marginLeft = '1rem';
+        timeDisplay.appendChild(ampm);
+      }
+      
+      dateDisplay.textContent = format(now, 'EEEE, MMMM d, yyyy');
+    }
+    
+    formatToggle.addEventListener('change', updateMainClock);
+    setInterval(updateMainClock, 1000);
+    updateMainClock();
+
+    // World Clock
+    const timezoneSelect = document.getElementById('timezone-select');
+    const worldTime = document.getElementById('world-time');
+    const worldDate = document.getElementById('world-date');
+    
+    function updateWorldClock() {
+      const now = new Date();
+      const selectedZone = timezoneSelect.value;
+      
+      worldTime.textContent = formatWithTimeZone(now, 'HH:mm:ss', selectedZone);
+      worldDate.textContent = formatWithTimeZone(now, 'EEEE, MMMM d, yyyy', selectedZone);
+    }
+    
+    timezoneSelect.addEventListener('change', updateWorldClock);
+    setInterval(updateWorldClock, 1000);
+    updateWorldClock();
+
+    // Alarm
+    const alarmInput = document.getElementById('alarm-input');
+    const addAlarmButton = document.getElementById('add-alarm');
+    const alarmsContainer = document.getElementById('alarms-container');
+    const alarms = [];
+    
+    function checkAlarms() {
+      const now = new Date();
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+      const currentSeconds = now.getSeconds();
+      
+      alarms.forEach(alarm => {
+        const [hours, minutes] = alarm.time.split(':').map(Number);
+        
+        if (currentHours === hours && currentMinutes === minutes && currentSeconds === 0) {
+          showToast({
+            title: 'Alarm!',
+            description: `It's ${format(now, 'hh:mm a')}`
+          });
+        }
+      });
+    }
+    
+    addAlarmButton.addEventListener('click', () => {
+      if (!alarmInput.value) {
+        showToast({
+          title: 'Invalid time',
+          description: 'Please select a time for the alarm',
+          variant: 'destructive'
+        });
+        return;
+      }
+      
+      const alarmTime = alarmInput.value;
+      const alarmId = Date.now().toString();
+      alarms.push({ time: alarmTime, id: alarmId });
+      
+      // Create alarm item
+      const alarmElement = document.createElement('div');
+      alarmElement.className = 'flex items-center justify-between p-2 rounded-md bg-primary-5';
+      alarmElement.dataset.id = alarmId;
+      
+      const timeDisplay = document.createElement('span');
+      timeDisplay.className = 'font-mono';
+      const date = new Date();
+      const [hours, minutes] = alarmTime.split(':');
+      date.setHours(hours);
+      date.setMinutes(minutes);
+      timeDisplay.textContent = format(date, 'hh:mm a');
+      
+      const removeButton = document.createElement('button');
+      removeButton.className = 'button button-destructive button-sm';
+      removeButton.textContent = 'Remove';
+      removeButton.addEventListener('click', () => {
+        const index = alarms.findIndex(alarm => alarm.id === alarmId);
+        if (index !== -1) {
+          alarms.splice(index, 1);
+        }
+        alarmElement.remove();
+      });
+      
+      alarmElement.appendChild(timeDisplay);
+      alarmElement.appendChild(removeButton);
+      alarmsContainer.appendChild(alarmElement);
+      
+      alarmInput.value = '';
+      
+      showToast({
+        title: 'Alarm Set',
+        description: `Alarm set for ${format(date, 'hh:mm a')}`
+      });
+    });
+    
+    setInterval(checkAlarms, 1000);
+
+    // Stopwatch
+    const stopwatchDisplay = document.getElementById('stopwatch-display');
+    const stopwatchStartButton = document.getElementById('stopwatch-start');
+    const stopwatchStopButton = document.getElementById('stopwatch-stop');
+    const stopwatchResetButton = document.getElementById('stopwatch-reset');
+    
+    let stopwatchTime = 0;
+    let stopwatchInterval;
+    let isStopwatchRunning = false;
+    
+    function formatStopwatchTime(time) {
+      const minutes = Math.floor(time / 6000);
+      const seconds = Math.floor((time % 6000) / 100);
+      const centiseconds = time % 100;
+      
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
+    }
+    
+    function updateStopwatchDisplay() {
+      stopwatchDisplay.textContent = formatStopwatchTime(stopwatchTime);
+    }
+    
+    stopwatchStartButton.addEventListener('click', () => {
+      isStopwatchRunning = true;
+      stopwatchStartButton.disabled = true;
+      stopwatchStopButton.disabled = false;
+      
+      stopwatchInterval = setInterval(() => {
+        stopwatchTime++;
+        updateStopwatchDisplay();
+      }, 10);
+    });
+    
+    stopwatchStopButton.addEventListener('click', () => {
+      isStopwatchRunning = false;
+      clearInterval(stopwatchInterval);
+      stopwatchStartButton.disabled = false;
+      stopwatchStopButton.disabled = true;
+    });
+    
+    stopwatchResetButton.addEventListener('click', () => {
+      clearInterval(stopwatchInterval);
+      stopwatchTime = 0;
+      updateStopwatchDisplay();
+      isStopwatchRunning = false;
+      stopwatchStartButton.disabled = false;
+      stopwatchStopButton.disabled = true;
+    });
+    
+    updateStopwatchDisplay();
+
+    // Timer
+    const timerInput = document.getElementById('timer-minutes');
+    const timerDisplay = document.getElementById('timer-display');
+    const timerStartButton = document.getElementById('timer-start');
+    const timerPauseButton = document.getElementById('timer-pause');
+    const timerResumeButton = document.getElementById('timer-resume');
+    const timerResetButton = document.getElementById('timer-reset');
+
+    let timerTimeLeft = 0;
+    let timerInterval = null;
+    let isTimerRunning = false;
+    let isTimerPaused = false;
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timerTimeLeft / 60);
+      const seconds = timerTimeLeft % 60;
+      timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    timerStartButton.addEventListener('click', () => {
+      const minutes = parseFloat(timerInput.value);
+      if (isNaN(minutes) || minutes <= 0) {
+        showToast({
+          title: 'Invalid Time',
+          description: 'Please enter a valid number of minutes.'
+        });
+        return;
+      }
+
+      timerTimeLeft = Math.floor(minutes * 60);
+      isTimerRunning = true;
+      isTimerPaused = false;
+
+      timerInput.disabled = true;
+      timerStartButton.disabled = true;
+      timerPauseButton.disabled = false;
+      timerResumeButton.disabled = true;
+      timerResetButton.disabled = false;
+
+      updateTimerDisplay();
+
+      timerInterval = setInterval(() => {
+        if (!isTimerPaused && timerTimeLeft <= 1) {
+          clearInterval(timerInterval);
+          timerTimeLeft = 0;
+          isTimerRunning = false;
+          isTimerPaused = false;
+
+          timerInput.disabled = false;
+          timerStartButton.disabled = false;
+          timerPauseButton.disabled = true;
+          timerResumeButton.disabled = true;
+          timerResetButton.disabled = true;
+
+          showToast({
+            title: 'Timer Complete!',
+            description: 'Your countdown has finished.'
+          });
+        } else if (!isTimerPaused) {
+          timerTimeLeft--;
+        }
+
+        updateTimerDisplay();
+      }, 1000);
+    });
+
+    timerPauseButton.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      isTimerPaused = true;
+
+      timerPauseButton.disabled = true;
+      timerResumeButton.disabled = false;
+      timerResetButton.disabled = false;
+    });
+
+    timerResumeButton.addEventListener('click', () => {
+      isTimerPaused = false;
+
+      timerPauseButton.disabled = false;
+      timerResumeButton.disabled = true;
+
+      timerInterval = setInterval(() => {
+        if (!isTimerPaused && timerTimeLeft <= 1) {
+          clearInterval(timerInterval);
+          timerTimeLeft = 0;
+          isTimerRunning = false;
+          isTimerPaused = false;
+
+          timerInput.disabled = false;
+          timerStartButton.disabled = false;
+          timerPauseButton.disabled = true;
+          timerResumeButton.disabled = true;
+          timerResetButton.disabled = true;
+
+          showToast({
+            title: 'Timer Complete!',
+            description: 'Your countdown has finished.'
+          });
+        } else if (!isTimerPaused) {
+          timerTimeLeft--;
+        }
+
+        updateTimerDisplay();
+      }, 1000);
+    });
+
+    timerResetButton.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      timerTimeLeft = 0;
+      isTimerRunning = false;
+      isTimerPaused = false;
+
+      timerInput.disabled = false;
+      timerStartButton.disabled = false;
+      timerPauseButton.disabled = true;
+      timerResumeButton.disabled = true;
+      timerResetButton.disabled = true;
+      timerInput.value = '';
+
+      updateTimerDisplay();
+    });
+
+    // Media Query for hiding text on mobile
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const hiddenMobileElements = document.querySelectorAll('.hidden-mobile');
+    
+    function handleMobileView(e) {
+      hiddenMobileElements.forEach(el => {
+        el.style.display = e.matches ? 'none' : 'inline';
+      });
+    }
+    
+    mediaQuery.addEventListener('change', handleMobileView);
+    handleMobileView(mediaQuery);
+  </script>
+</body>
+</html>

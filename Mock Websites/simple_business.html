@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand - Professional Business Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            color: #343a40;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 4px solid #007bff;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #007bff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border-radius: 8px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-link {
+            color: #495057;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+        }
+
+        .nav-link:hover {
+            color: #007bff;
+            border-bottom-color: #007bff;
+        }
+
+        .contact-btn {
+            background: #007bff;
+            color: white;
+            padding: 0.75rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid #007bff;
+        }
+
+        .contact-btn:hover {
+            background: transparent;
+            color: #007bff;
+        }
+
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: left;
+            margin-top: 90px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+
+        .stat-item p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            border: 2px solid #007bff;
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border-color: white;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about {
+            background: #ffffff;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            color: #007bff;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .about-text p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        .about-features {
+            list-style: none;
+        }
+
+        .about-features li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .about-features li::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 1rem;
+            width: 20px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .service-card {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-top: 4px solid #007bff;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: #007bff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #007bff;
+            font-weight: 600;
+        }
+
+        .service-description {
+            color: #495057;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .service-features {
+            list-style: none;
+        }
+
+        .service-features li {
+            padding: 0.5rem 0;
+            color: #6c757d;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .service-features li::before {
+            content: '•';
+            color: #007bff;
+            position: absolute;
+            left: 0;
+        }
+
+        .contact {
+            background: #f8f9fa;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-top: 4rem;
+        }
+
+        .contact-info {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: #007bff;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .contact-details h4 {
+            color: #007bff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .contact-details p {
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .contact-form {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .submit-btn {
+            background: #007bff;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            background: #0056b3;
+        }
+
+        .footer {
+            background: #343a40;
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .footer p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .footer-links a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #007bff;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-container {
+                padding: 1rem 2rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1.5rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 0 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">Brand</a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="#contact" class="contact-btn">Get Started</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Professional Business Solutions</h1>
+                        <p>Brand delivers enterprise-grade consulting services and strategic solutions that drive measurable results for your organization. Partner with us to unlock your business potential.</p>
+                        <a href="#contact" class="cta-button">Schedule Consultation</a>
+                        <a href="#services" class="cta-button secondary">View Services</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-row">
+                            <div class="stat-item">
+                                <h3>500+</h3>
+                                <p>Projects Completed</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>10+</h3>
+                                <p>Years Experience</p>
+                            </div>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-item">
+                                <h3>98%</h3>
+                                <p>Client Retention</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>24/7</h3>
+                                <p>Support Available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section about">
+            <div class="container">
+                <h2 class="section-title">About Brand</h2>
+                <p class="section-subtitle">We are a leading business consulting firm specializing in strategic planning, operational excellence, and digital transformation for enterprises worldwide.</p>
+                
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Our Approach</h3>
+                        <p>At Brand, we combine deep industry expertise with innovative methodologies to deliver solutions that create lasting value. Our consultants work closely with your team to understand your unique challenges and develop customized strategies that drive growth.</p>
+                        
+                        <h3>Why Choose Us</h3>
+                        <p>We pride ourselves on delivering measurable results through data-driven insights, proven frameworks, and collaborative partnerships that extend beyond project completion.</p>
+                    </div>
+                    
+                    <div class="about-features-container">
+                        <ul class="about-features">
+                            <li>Certified business consultants with industry expertise</li>
+                            <li>Proven track record across multiple sectors</li>
+                            <li>Data-driven approach to strategic planning</li>
+                            <li>Comprehensive post-implementation support</li>
+                            <li>Transparent communication and regular reporting</li>
+                            <li>Scalable solutions for businesses of all sizes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <div class="container">
+                <h2 class="section-title">Our Services</h2>
+                <p class="section-subtitle">Comprehensive business solutions designed to optimize performance and drive sustainable growth across all areas of your organization.</p>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">📊</div>
+                        <h3 class="service-title">Strategic Planning</h3>
+                        <p class="service-description">Comprehensive strategic planning services that align your vision with actionable roadmaps for sustainable growth and competitive advantage.</p>
+                        <ul class="service-features">
+                            <li>Market analysis and competitive intelligence</li>
+                            <li>Strategic roadmap development</li>
+                            <li>Performance metrics and KPI design</li>
+                            <li>Risk assessment and mitigation planning</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">⚙️</div>
+                        <h3 class="service-title">Operational Excellence</h3>
+                        <p class="service-description">Optimize your operations through process improvement, workflow automation, and efficiency enhancement initiatives.</p>
+                        <ul class="service-features">
+                            <li>Process mapping and optimization</li>
+                            <li>Workflow automation implementation</li>
+                            <li>Quality management systems</li>
+                            <li>Supply chain optimization</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">💻</div>
+                        <h3 class="service-title">Digital Transformation</h3>
+                        <p class="service-description">Leverage technology to modernize your business processes and enhance customer experiences through digital innovation.</p>
+                        <ul class="service-features">
+                            <li>Technology strategy and roadmap</li>
+                            <li>System integration and migration</li>
+                            <li>Digital workplace solutions</li>
+                            <li>Change management support</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">👥</div>
+                        <h3 class="service-title">Organizational Development</h3>
+                        <p class="service-description">Build high-performing teams and optimize organizational structure to support your business objectives.</p>
+                        <ul class="service-features">
+                            <li>Leadership development programs</li>
+                            <li>Team effectiveness coaching</li>
+                            <li>Organizational restructuring</li>
+                            <li>Performance management systems</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">💰</div>
+                        <h3 class="service-title">Financial Advisory</h3>
+                        <p class="service-description">Strategic financial planning and analysis to optimize cash flow, reduce costs, and improve profitability.</p>
+                        <ul class="service-features">
+                            <li>Financial planning and analysis</li>
+                            <li>Cost optimization strategies</li>
+                            <li>Investment planning and evaluation</li>
+                            <li>Risk management frameworks</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card">
+                        <div class="service-icon">🎯</div>
+                        <h3 class="service-title">Market Expansion</h3>
+                        <p class="service-description">Strategic guidance for entering new markets, launching products, and scaling operations internationally.</p>
+                        <ul class="service-features">
+                            <li>Market entry strategy development</li>
+                            <li>Competitive landscape analysis</li>
+                            <li>Partnership and acquisition support</li>
+                            <li>International expansion planning</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section contact">
+            <div class="container">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Ready to transform your business? Contact our team of experts to discuss your specific needs and discover how we can help you achieve your goals.</p>
+                
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3 style="color: #007bff; margin-bottom: 2rem; font-size: 1.5rem;">Contact Information</h3>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>info@brand.com</p>
+                                <p>We respond within 4 business hours</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <p>+1 (555) 123-4567</p>
+                                <p>Monday - Friday, 8 AM - 7 PM EST</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-details">
+                                <h4>Office</h4>
+                                <p>123 Business Plaza, Suite 500</p>
+                                <p>New York, NY 10001</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">🕒</div>
+                            <div class="contact-details">
+                                <h4>Business Hours</h4>
+                                <p>Monday - Friday: 8:00 AM - 7:00 PM</p>
+                                <p>Saturday: 9:00 AM - 3:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form">
+                        <h3 style="color: #007bff; margin-bottom: 2rem; font-size: 1.5rem;">Send us a Message</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="company">Company Name</label>
+                                <input type="text" id="company" name="company">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="service">Service Interest</label>
+                                <select id="service" name="service" style="width: 100%; padding: 1rem; border: 2px solid #e9ecef; border-radius: 5px; font-size: 1rem;">
+                                    <option value="">Select a service</option>
+                                    <option value="strategic">Strategic Planning</option>
+                                    <option value="operations">Operational Excellence</option>
+                                    <option value="digital">Digital Transformation</option>
+                                    <option value="organizational">Organizational Development</option>
+                                    <option value="financial">Financial Advisory</option>
+                                    <option value="market">Market Expansion</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="5" placeholder="Tell us about your project and how we can help..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Brand Professional Services. All rights reserved.</p>
+            <p>Delivering excellence in business consulting and strategic solutions.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Careers</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = 110;
+                    const targetPosition = target.offsetTop - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                submitBtn.textContent = 'Message Sent!';
+                setTimeout(() => {
+                    submitBtn.textContent = 'Send Message';
+                    submitBtn.disabled = false;
+                    this.reset();
+                }, 2000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

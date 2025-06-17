@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Results</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/campton" rel="stylesheet"> <!-- Campton font -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #333333;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    body.loaded {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
+      color: white;
+      padding: 100px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .hero h2 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    .hero button {
+      background-color: white;
+      color: #00bcd4;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .hero button:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Back to Main Website Link */
+    .back-to-main {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      font-family: 'Campton', sans-serif;
+      font-weight: 800; /* ExtraBold */
+      font-size: 18px;
+      color: #000000;
+      text-decoration: none;
+      display: flex;
+      font-size: 30px;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(90deg, #00bcd4, #0097a7, #00bcd4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: ytdc 7s linear infinite;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      gap: 20px;
+      padding: 30px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      flex: 1 1 calc(33.333% - 40px);
+      margin: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      border: 2px solid #00bcd4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .stat-box i {
+      font-size: 36px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .stat-box h2 {
+      font-size: 24px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .stat-box p {
+      font-size: 18px;
+      color: #333333;
+    }
+
+    .chart-and-stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 40px;
+      padding: 10px;
+      height: auto;
+      flex-wrap: wrap;
+    }
+
+    .chart-container {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      border: 2px solid #00bcd4;
+      flex: 1;
+      height: 400px;
+      max-height: 1000px;
+      position: relative;
+      min-width: 300px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chart-container h2 {
+      font-size: 24px;
+      color: #00bcd4;
+      margin-bottom: 20px;
+    }
+
+    #donut-chart {
+      width: 80% !important;
+      height: 80% !important;
+    }
+
+    .additional-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      align-items: stretch;
+      height: auto;
+      box-sizing: border-box;
+    }
+
+    .additional-stat-box {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      border: 2px solid #00bcd4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 85%;
+    }
+
+    .additional-stat-box.bottom-row {
+      margin-top: 29px;
+      height: 175px;
+    }
+
+    .additional-stat-box i {
+      font-size: 24px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .additional-stat-box h2 {
+      font-size: 18px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .additional-stat-box p {
+      font-size: 14px;
+      color: #333333;
+    }
+
+    /* Person Profiles */
+    .person-profiles {
+      background-color: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      border: 2px solid #00bcd4;
+      max-height: 400px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* Two columns */
+      gap: 20px; /* Gap between CVs */
+    }
+
+    /* Custom Scrollbar Styling */
+    .person-profiles::-webkit-scrollbar {
+      width: 10px; /* Width of the scrollbar */
+    }
+
+    .person-profiles::-webkit-scrollbar-track {
+      background: #f5f5f5; /* Track color */
+      border-radius: 10px;
+    }
+
+    .person-profiles::-webkit-scrollbar-thumb {
+      background: #00bcd4; /* Thumb color */
+      border-radius: 10px;
+    }
+
+    .person-profiles::-webkit-scrollbar-thumb:hover {
+      background: #0097a7; /* Thumb color on hover */
+    }
+
+    .person-profile {
+      background-color: #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #00bcd4;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .person-profile h3 {
+      font-size: 20px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .person-profile p {
+      font-size: 16px;
+      color: #333333;
+      margin: 5px 0;
+    }
+
+    .person-profile button {
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .person-profile button:hover {
+      background-color: #0097a7;
+    }
+
+    /* Top Majors Section */
+    .top-majors {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .top-majors h2 {
+      font-size: 28px;
+      color: #00bcd4;
+      margin-bottom: 30px;
+    }
+
+    .majors-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .major-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      width: 250px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .major-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 188, 212, 0.3);
+    }
+
+    .major-card i {
+      font-size: 36px;
+      color: #00bcd4;
+      margin-bottom: 15px;
+    }
+
+    .major-card h3 {
+      font-size: 20px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .major-card p {
+      font-size: 14px;
+      color: #333333;
+    }
+
+    /* Trending Skills Section */
+    .trending-skills {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .trending-skills h2 {
+      font-size: 28px;
+      color: #00bcd4;
+      margin-bottom: 30px;
+    }
+
+    .skills-tags {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .skills-tags span {
+      background-color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 14px;
+      color: #333333;
+      box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .skills-tags span:hover {
+      background-color: #00bcd4;
+      color: white;
+    }
+
+    /* Success Stories Section */
+    .success-stories {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .success-stories h2 {
+      font-size: 28px;
+      color: #00bcd4;
+      margin-bottom: 30px;
+    }
+
+    .stories-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .story-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      width: 250px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .story-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 188, 212, 0.3);
+    }
+
+    .story-card h3 {
+      font-size: 20px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .story-card p {
+      font-size: 14px;
+      color: #333333;
+      margin: 5px 0;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .how-it-works h2 {
+      font-size: 28px;
+      color: #00bcd4;
+      margin-bottom: 30px;
+    }
+
+    .steps-grid {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .step-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      width: 250px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 20px rgba(0, 188, 212, 0.3);
+    }
+
+    .step-card i {
+      font-size: 36px;
+      color: #00bcd4;
+      margin-bottom: 15px;
+    }
+
+    .step-card h3 {
+      font-size: 20px;
+      color: #00bcd4;
+      margin-bottom: 10px;
+    }
+
+    .step-card p {
+      font-size: 14px;
+      color: #333333;
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+      background-color: #f5f5f5;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .testimonials h2 {
+      font-size: 28px;
+      color: #00bcd4;
+      margin-bottom: 30px;
+    }
+
+    .testimonial-cards {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .testimonial-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.2);
+      width: 300px;
+    }
+
+    .testimonial-card p {
+      font-size: 16px;
+      color: #333333;
+    }
+
+    /* CTA Section */
+    .cta {
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
+      color: white;
+      padding: 60px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    .cta h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .cta p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    .cta button {
+      background-color: white;
+      color: #00bcd4;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta button:hover {
+      background-color: #f0f0f0;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #333333;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .footer-links {
+      margin-top: 10px;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal for PDF Viewer */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: flex-start; /* Align modal to the top of the viewport */
+      z-index: 1000;
+      overflow-y: auto; /* Allow scrolling within the modal */
+      padding-top: 20px; /* Add some padding at the top */
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      margin-top: 20px; /* Add margin to avoid sticking to the top */
+    }
+
+    .modal-content iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #00bcd4;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .close-modal:hover {
+      background-color: #0097a7;
+    }
+
+    /* Disable body scroll when modal is open */
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    /* Responsive Design for Tablet and Mobile */
+    @media (max-width: 768px) {
+      .person-profiles {
+        grid-template-columns: repeat(1, 1fr); /* One column on mobile */
+      }
+
+      .back-to-main {
+        top: 10px;
+        left: 10px;
+        font-size: 16px;
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Back to Main Website Link -->
+  <a href="index.html" class="back-to-main">
+    <span>&lt;</span> YOUR BRAND
+  </a>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Find Your Perfect Match</h2>
+      <p>Discover top talent tailored to your needs with advanced search.</p>
+      <button onclick="scrollToResults()">Explore Results</button>
+    </div>
+  </section>
+
+  <!-- Search Results Section -->
+  <div class="container">
+    <h1>Search Results</h1>
+
+    <!-- Stats Container -->
+    <div class="stats-container">
+      <div class="stat-box">
+        <i class="fas fa-users"></i>
+        <h2>Total Matches</h2>
+        <p>10,803</p>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-envelope"></i>
+        <h2>Emails Sent</h2>
+        <p>26</p>
+      </div>
+      <div class="stat-box">
+        <i class="fas fa-file-alt"></i>
+        <h2>Applications Submitted</h2>
+        <p>6</p>
+      </div>
+    </div>
+
+    <!-- Chart and Additional Stats -->
+    <div class="chart-and-stats">
+      <!-- Donut Chart -->
+      <div class="chart-container">
+        <h2>Total Matches Overview</h2>
+        <canvas id="donut-chart"></canvas>
+      </div>
+
+      <!-- Additional Stats -->
+      <div class="additional-stats">
+        <div class="additional-stat-box">
+          <i class="fas fa-percentage"></i>
+          <h2>Match Percentage</h2>
+          <p>5</p>
+        </div>
+        <div class="additional-stat-box" id="edited1">
+          <i class="fas fa-cogs"></i>
+          <h2>Skill Match</h2>
+          <p>1</p>
+        </div>
+        <div class="additional-stat-box bottom-row">
+          <i class="fas fa-graduation-cap"></i>
+          <h2>Education Match</h2>
+          <p>3 Locations</p>
+        </div>
+        <div class="additional-stat-box bottom-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <h2>Location Proximity</h2>
+          <p>32</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Person Profiles -->
+    <div class="person-profiles">
+      <h2 style="grid-column: span 2;">Match Details</h2> <!-- Span across two columns -->
+      <div class="person-profile">
+        <h3>Joe</h3>
+        <p><strong>Major:</strong> Computer Science</p>
+        <p><strong>Location:</strong> Davie, FL</p>
+        <p><strong>Skills:</strong> Project Management, AI, IT</p>
+        <p><strong>Match Percentage:</strong> 85%</p>
+        <button onclick="openPdf('sample.pdf')">View CV</button>
+      </div>
+      <div class="person-profile">
+        <h3>Samantha</h3>
+        <p><strong>Major:</strong> Artificial Intelligence</p>
+        <p><strong>Location:</strong> Redmond, WA</p>
+        <p><strong>Skills:</strong> AI, Machine Learning, Data Science</p>
+        <p><strong>Match Percentage:</strong> 78%</p>
+        <button onclick="openPdf('sample.pdf')">View CV</button>
+      </div>
+      <div class="person-profile">
+        <h3>Ahmad</h3>
+        <p><strong>Major:</strong> Information Technology</p>
+        <p><strong>Location:</strong> Baltimore, MD</p>
+        <p><strong>Skills:</strong> IT, Networking, Cybersecurity</p>
+        <p><strong>Match Percentage:</strong> 92%</p>
+        <button onclick="openPdf('sample.pdf')">View CV</button>
+      </div>
+      <div class="person-profile">
+        <h3>Emily</h3>
+        <p><strong>Major:</strong> Software Engineering</p>
+        <p><strong>Location:</strong> San Francisco, CA</p>
+        <p><strong>Skills:</strong> Full-Stack Development, DevOps</p>
+        <p><strong>Match Percentage:</strong> 88%</p>
+        <button onclick="openPdf('sample.pdf')">View CV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Majors Section -->
+  <div class="top-majors">
+    <h2>Top Majors in Demand</h2>
+    <div class="majors-grid">
+      <div class="major-card">
+        <i class="fas fa-laptop-code"></i>
+        <h3>Computer Science</h3>
+        <p>High demand for roles in software development and AI.</p>
+      </div>
+      <div class="major-card">
+        <i class="fas fa-brain"></i>
+        <h3>Artificial Intelligence</h3>
+        <p>Leading the way in machine learning and data science.</p>
+      </div>
+      <div class="major-card">
+        <i class="fas fa-network-wired"></i>
+        <h3>Information Technology</h3>
+        <p>Essential for cybersecurity and network management.</p>
+      </div>
+      <div class="major-card">
+        <i class="fas fa-cogs"></i>
+        <h3>Software Engineering</h3>
+        <p>Building scalable and efficient software systems.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trending Skills Section -->
+  <div class="trending-skills">
+    <h2>Trending Skills in 2025</h2>
+    <div class="skills-tags">
+      <span>AI & Machine Learning</span>
+      <span>Data Science</span>
+      <span>Cybersecurity</span>
+      <span>Cloud Computing</span>
+      <span>DevOps</span>
+      <span>Full-Stack Development</span>
+      <span>Project Management</span>
+      <span>UI/UX Design</span>
+    </div>
+  </div>
+
+  <!-- Success Stories Section -->
+  <div class="success-stories">
+    <h2>What Our Users Say</h2>
+    <div class="stories-grid">
+      <div class="story-card">
+        <h3>John Doe</h3>
+        <p><strong>Hired as:</strong> Senior AI Engineer</p>
+        <p>"This platform helped me land my dream job in just 2 weeks!"</p>
+      </div>
+      <div class="story-card">
+        <h3>Jane Smith</h3>
+        <p><strong>Hired as:</strong> Full-Stack Developer</p>
+        <p>"The match accuracy was incredible. I highly recommend it!"</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works Section -->
+  <div class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <i class="fas fa-search"></i>
+        <h3>Search</h3>
+        <p>Find the perfect match based on skills, location, and education.</p>
+      </div>
+      <div class="step-card">
+        <i class="fas fa-envelope"></i>
+        <h3>Connect</h3>
+        <p>Reach out to candidates or employers directly.</p>
+      </div>
+      <div class="step-card">
+        <i class="fas fa-handshake"></i>
+        <h3>Hire</h3>
+        <p>Complete the hiring process seamlessly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="cta">
+    <h2>Ready to Find Your Perfect Match?</h2>
+    <p>Return to our main website and discover the perfect match for your company’s needs.</p>
+    <button onclick="window.location.href='index.html'">Get Started</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Your Brand. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </footer>
+
+  <!-- Modal for PDF Viewer -->
+  <div class="modal" id="pdfModal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closePdf()">Close</button>
+      <iframe id="pdfViewer" src="" frameborder="0"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Smooth transition on page load
+    setTimeout(() => {
+      document.body.classList.add('loaded');
+    }, 100);
+
+    // Donut Chart
+    const ctx = document.getElementById('donut-chart').getContext('2d');
+    const donutChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Senior Project Manager', 'AI Project Manager', 'IT Project Manager'],
+        datasets: [{
+          label: 'Total Matches',
+          data: [5043, 3000, 2760],
+          backgroundColor: [
+            '#00bcd4',
+            '#0097a7',
+            '#00bcd4'
+          ],
+          borderColor: [
+            '#ffffff',
+            '#ffffff',
+            '#ffffff'
+          ],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#333333',
+              padding: 20,
+            }
+          }
+        }
+      }
+    });
+
+    // PDF Viewer Functions
+    function openPdf(pdfUrl) {
+      const modal = document.getElementById('pdfModal');
+      const pdfViewer = document.getElementById('pdfViewer');
+      pdfViewer.src = pdfUrl;
+
+      // Set modal position to the current scroll position
+      modal.style.top = `${window.scrollY}px`;
+      modal.style.display = 'flex';
+
+      // Disable body scroll
+      document.body.classList.add('modal-open');
+    }
+
+    function closePdf() {
+      const modal = document.getElementById('pdfModal');
+      const pdfViewer = document.getElementById('pdfViewer');
+      pdfViewer.src = '';
+      modal.style.display = 'none';
+
+      // Re-enable body scroll
+      document.body.classList.remove('modal-open');
+    }
+
+    // Scroll to Results
+    function scrollToResults() {
+      document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

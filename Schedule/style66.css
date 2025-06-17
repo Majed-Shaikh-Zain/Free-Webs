@@ -1,0 +1,97 @@
+body {
+    font-family: 'Comic Sans MS', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f4f8;
+    margin: 0;
+    /* overflow: hidden; */ /* Removed to allow scrolling */
+}
+
+.dashboard {
+    width: 90%;
+    max-width: 1200px;
+    background-color: #ffffff;
+    border: 2px solid #6c5b7b;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(108, 91, 123, 0.2);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+    grid-template-rows: auto; /* Allow rows to grow dynamically */
+    gap: 25px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    min-height: 80vh; /* Minimum height to fit content */
+}
+
+.card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(108, 91, 123, 0.2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 5px; /* Padding set to 5px */
+    text-align: center;
+    height: 100%;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(108, 91, 123, 0.3);
+}
+
+.card button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: black;
+    background-color: #f0f4f8;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    max-width: 150px;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.card button.red {
+    background-color: #ff6f61;
+    cursor: not-allowed;
+}
+
+.card button.orange {
+    background-color: #ff8c42;
+}
+
+.card.add-activity button {
+    background-color: #88d8b0;
+}
+
+.card.add-activity button:hover {
+    background-color: #6c5b7b;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 800px) {
+    .dashboard {
+        grid-template-columns: repeat(3, 1fr); /* Switch to 3 columns */
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .dashboard {
+        grid-template-columns: 1fr; /* Single column for very small screens */
+    }
+}

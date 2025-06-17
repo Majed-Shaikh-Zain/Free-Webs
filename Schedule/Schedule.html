@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Schedule</title>
+    <link id="style-link" rel="stylesheet" href="">
+    <script>
+        // Function to apply the corresponding style
+        function applyStyle(style) {
+            const styleLink = document.getElementById('style-link');
+            if (style && style.startsWith('style')) {
+                // Use the same CSS file as selected in style.html (e.g., style1.css)
+                const cssFile = `${style}.css`;
+                console.log(`Applying style: ${cssFile}`); // Debugging log
+                styleLink.href = cssFile;
+            } else {
+                // Default to a fallback style if no valid style is found
+                console.log('No valid style found. Applying fallback style: style1.css'); // Debugging log
+                styleLink.href = 'style1.css';
+            }
+        }
+
+        // Apply the style on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Retrieve the selected style from sessionStorage
+            const style = sessionStorage.getItem('selectedStyle');
+            console.log(`Retrieved style from sessionStorage: ${style}`); // Debugging log
+            applyStyle(style);
+        });
+    </script>
+</head>
+<body>
+    <div class="left-box">
+        <h3>Welcome Stranger.</h3>
+        <p id="p1" class="scrollable-text">
+            Using the following information, you will be able to determine the significance of each color-coded slot. Please pay close attention, as this explanation will be your only guidance for interpreting the schedule. 
+        
+            <br><br><br>
+        
+            If you find a <span id="red">Red</span> button, it signifies that the corresponding timeline is occupied by an external, uncontrollable factor, such as a university lecture or an important meeting. These slots cannot be managed or altered manually.
+        
+            <br><br><br>
+        
+            If you encounter an <span id="orange">Orange</span> button, it indicates that the timeline is currently in use and reflects an activity happening at this moment.
+        
+            <br><br><br>
+        
+            Finally, a <span id="green">Green</span> button represents an available or flexible task. This could denote a task that has already been completed or one that remains to be accomplished.
+        
+            <br><br><br>
+        
+            Additionally, consider implementing a method to track the status of previously completed sessions. For example, you might introduce a fourth color to identify finished tasks or adopt another innovative approach to visually distinguish between completed and pending sessions.
+        </p>
+    </div>
+
+    <div class="right-content">
+        <h1 id="t1">Shaikh Zain's Schedule</h1>
+        <h2 id="t2">Proceed By Selecting the current day!</h2>
+
+        <!-- Row 1: Buttons -->
+        <div class="button-row">
+            <a href="mon.html" class="button">Monday</a>
+            <a href="tue.html" class="button">Tuesday</a>
+            <a href="wed.html" class="button">Wednesday</a>
+            <a href="thu.html" class="button">Thursday</a>
+        </div>
+
+        <!-- Row 2: Buttons -->
+        <div class="button-row">
+            <a href="fri.html" class="button">Friday</a>
+            <a href="sat.html" class="button">Saturday</a>
+            <a href="sun.html" class="button">Sunday</a>
+        </div>
+    </div>
+</body>
+</html>

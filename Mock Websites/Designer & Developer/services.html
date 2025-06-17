@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAD Services</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #333333;
+      line-height: 1.6;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Navigation Bar */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 5%;
+      overflow: hidden;
+      position: fixed;
+      width: 90%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.5s ease;
+      background: linear-gradient(135deg, #6a11cb, #2575fc); /* Default blue */
+    }
+
+    nav::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Orange/Yellow */
+      opacity: 0;
+      transition: opacity 0.5s ease, background 0.5s ease; /* Smooth transition for background */
+      z-index: -1;
+    }
+
+    .theme-design nav::before {
+      opacity: 1;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Orange/Yellow */
+    }
+
+    .theme-both nav::before {
+      opacity: 1;
+      background: linear-gradient(135deg, #a54e07, #fef1a2, #a54e07); /* Gold gradient */
+      animation: shimmer 3s infinite linear; /* Gold shimmer animation */
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      transition: color 0.5s ease;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-links a.deactivated {
+      color: red !important;
+      pointer-events: none;
+      background: rgba(255,0,0,0.1);
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .nav-links a:hover::before {
+      opacity: 1;
+    }
+
+    .nav-links a:hover {
+      transform: translateY(-3px);
+    }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .menu-toggle span {
+      height: 3px;
+      width: 25px;
+      background: white;
+      margin: 4px 0;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 5%;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 60px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 60px);
+        transition: all 0.3s ease;
+        flex-direction: column;
+        padding: 2rem 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 1001;
+      }
+
+      .nav-links.active {
+        left: 0;
+      }
+
+      .nav-links a {
+        width: fit-content;
+        margin: 1rem auto;
+        font-size: 1.1rem;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+    }
+
+    /* Application Container */
+    .application-container {
+      max-width: 800px;
+      margin: 120px auto 50px;
+      padding: 2rem;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-header h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #2575fc; /* Default blue */
+      transition: color 0.5s ease;
+    }
+
+    .theme-design .form-header h1 {
+      color: #ff7e5f; /* Orange */
+    }
+
+    .theme-both .form-header h1 {
+      color: #a54e07; /* Gold */
+    }
+
+    .form-header p {
+      font-size: 1rem;
+      color: #666;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-sizing: border-box; /* Ensure padding is consistent */
+    }
+
+    .form-control:focus {
+      border-color: #2575fc; /* Default blue */
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.1);
+    }
+
+    .theme-design .form-control:focus {
+      border-color: #ff7e5f; /* Orange */
+      box-shadow: 0 0 0 3px rgba(255, 126, 95, 0.1);
+    }
+
+    .theme-both .form-control:focus {
+      border-color: #a54e07; /* Gold */
+      box-shadow: 0 0 0 3px rgba(165, 78, 7, 0.1);
+    }
+
+    .radio-inputs {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+
+    .radio-inputs .radio {
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .radio-inputs .name {
+      display: block;
+      padding: 1.5rem;
+      border-radius: 15px;
+      background: #f8f9fa;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .radio-inputs .name::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #2575fc; /* Default blue */
+      opacity: 0;
+      transition: opacity 0.3s ease, background 0.5s ease; /* Smooth transition for background */
+      z-index: -1;
+    }
+
+    .theme-design .radio-inputs .name::before {
+      background: #ff7e5f; /* Orange */
+    }
+
+    .theme-both .radio-inputs .name::before {
+      background: #a54e07; /* Gold */
+    }
+
+    .radio-inputs input:checked + .name::before {
+      opacity: 1;
+    }
+
+    .radio-inputs input:checked + .name {
+      color: white;
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.5s ease; /* Smooth transition for gold theme */
+      background: linear-gradient(135deg, #6a11cb, #2575fc); /* Default blue */
+      color: white;
+    }
+
+    .theme-design .submit-btn {
+      background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Orange/Yellow */
+    }
+
+    .theme-both .submit-btn {
+      background: linear-gradient(135deg, #a54e07, #fef1a2); /* Gold */
+    }
+
+    .submit-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      background-color: #333333;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    .footer-links {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #2575fc; /* Default blue */
+    }
+
+    .theme-design .footer-links a:hover {
+      color: #ff7e5f; /* Orange */
+    }
+
+    .theme-both .footer-links a:hover {
+      color: #fef1a2; /* Gold */
+    }
+
+    textarea.form-control { resize: none; }
+    .terms-check { margin: 2rem 0; }
+    
+    .terms-check a {
+      color: #2575fc; /* Default blue */
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
+
+    .terms-check a:hover {
+      color: #1a5bbf; /* Darker blue on hover */
+      text-decoration: underline;
+    }
+
+    .theme-design .terms-check a {
+      color: #ff7e5f; /* Orange */
+    }
+
+    .theme-design .terms-check a:hover {
+      color: #e56a4f; /* Darker orange on hover */
+    }
+
+    .theme-both .terms-check a {
+      color: #a54e07; /* Gold */
+    }
+
+    .theme-both .terms-check a:hover {
+      color: #8a3d06; /* Darker gold on hover */
+    }
+    .logo:hover {
+      text-decoration: none; /* Ensure underline doesn't appear on hover */
+    }
+    .logo {
+      text-decoration: none; /* Ensure underline doesn't appear on hover */
+    }
+  </style>
+</head>
+<body class="theme-development">
+  <nav>
+    <a href="index.html" class="logo">Designer & Developer</a>
+    <div class="menu-toggle" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="nav-links">
+      <a href="trending.html" class="nav-link"><i class="fas fa-chart-line"></i> Trending</a>
+      <a href="social.html" class="nav-link"><i class="fas fa-users"></i> Social</a>
+      <a href="policy.html" class="nav-link"><i class="fas fa-shield-alt"></i> Policy</a>
+      <a href="process.html" class="nav-link"><i class="fas fa-cogs"></i> Process</a>
+      <a href="language.html" class="nav-link"><i class="fas fa-globe"></i> Language</a>
+      <a href="services.html"><i class="fas fa-project-diagram"></i> Services</a>
+    </div>
+  </nav>
+
+  <div class="application-container">
+    <div class="form-header">
+      <h1>Professional Service Request</h1>
+      <p>Complete all fields below to submit your project requirements</p>
+    </div>
+
+    <form id="applicationForm">
+      <div class="radio-inputs">
+        <label class="radio">
+          <input type="radio" name="serviceType" value="design">
+          <span class="name">Design Service</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="serviceType" value="development" checked>
+          <span class="name">Development</span>
+        </label>
+        <label class="radio">
+          <input type="radio" name="serviceType" value="both">
+          <span class="name">Both</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="company">Company Name</label>
+        <input type="text" class="form-control" id="company" placeholder="Enter company name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" class="form-control" id="fullName" placeholder="Your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Professional Email</label>
+        <input type="email" class="form-control" id="email" placeholder="name@company.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Contact Number</label>
+        <input type="tel" class="form-control" id="phone" placeholder="1234567890" pattern="[0-9]+" title="Numbers only" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+      </div>
+
+      <div class="form-group">
+        <label for="budget">Project Budget</label>
+        <select class="form-control" id="budget" required>
+          <option value="">Select budget range</option>
+          <option value="1000-5000">$1,000 - $5,000</option>
+          <option value="5000-10000">$5,000 - $10,000</option>
+          <option value="10000-25000">$10,000 - $25,000</option>
+          <option value="25000+">$25,000+</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="timeline">Project Timeline</label>
+        <div class="radio-inputs">
+          <label class="radio">
+            <input type="radio" name="timeline" value="2-4 weeks" required>
+            <span class="name">2-4 Weeks</span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="timeline" value="1-3 months">
+            <span class="name">1-3 Months</span>
+          </label>
+          <label class="radio">
+            <input type="radio" name="timeline" value="flexible">
+            <span class="name">Flexible</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Project Requirements</label>
+        <textarea class="form-control" id="description" rows="6" placeholder="Detailed description of your project needs..." required></textarea>
+      </div>
+
+      <div class="terms-check">
+        <label style="display: block; margin-bottom: 1rem;">
+          <input type="checkbox" required> 
+          I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
+        </label>
+        <label style="display: block;">
+          <input type="checkbox"> 
+          Subscribe to our newsletter
+        </label>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Professional Request</button>
+    </form>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 DAD Services. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </footer>
+
+  <script>
+    // Theme Switching Logic with Smooth Animations
+    const serviceRadios = document.querySelectorAll('input[name="serviceType"]');
+    const body = document.body;
+
+    function updateTheme(theme) {
+      // Remove all theme classes
+      body.classList.remove('theme-design', 'theme-development', 'theme-both');
+      // Add new theme class
+      body.classList.add(`theme-${theme}`);
+    }
+
+    serviceRadios.forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        updateTheme(e.target.value);
+      });
+    });
+
+    // Initialize with default theme
+    updateTheme('development');
+
+    // Mobile Menu Functionality
+    function toggleMenu() {
+      const navLinks = document.querySelector('.nav-links');
+      navLinks.classList.toggle('active');
+    }
+
+    // Deactivate navbar links except "Services" on click
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        this.classList.add('deactivated');
+      });
+    });
+
+    // Form Submission Handling
+    document.getElementById('applicationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Phone number validation
+      const phoneInput = document.getElementById('phone');
+      if (!/^\d+$/.test(phoneInput.value)) {
+        alert('Please enter a valid phone number (numbers only)');
+        return;
+      }
+
+      const formData = {
+        serviceType: document.querySelector('input[name="serviceType"]:checked').value,
+        company: document.getElementById('company').value,
+        fullName: document.getElementById('fullName').value,
+        email: document.getElementById('email').value,
+        phone: phoneInput.value,
+        budget: document.getElementById('budget').value,
+        timeline: document.querySelector('input[name="timeline"]:checked').value,
+        description: document.getElementById('description').value,
+        agreedTerms: document.querySelector('.terms-check input[type="checkbox"]').checked
+      };
+
+      try {
+        const response = await fetch('http://localhost:5000/submit-service-request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          const errorMessage = await response.text();
+          alert(`Error: ${errorMessage}`);
+          return;
+        }
+
+        const result = await response.json();
+        alert(result.message);
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to submit form. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+body {
+    background-color: #fff5f5; /* Soft pink background */
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    margin: 0;
+    padding: 0 50px;
+    color: #4a4a4a; /* Soft dark gray for text */
+    overflow: hidden; /* Prevent the body from scrolling */
+}
+
+#t1, #t2 {
+    color: #ff6b6b; /* Soft strawberry red for headings */
+    text-transform: capitalize;
+    font-size: 45px;
+    text-align: center;
+    font-weight: 500; /* Medium weight for headings */
+}
+
+#t1 {
+    margin-bottom: 30px;
+}
+
+#t2 {
+    margin-top: -10px;
+    margin-bottom: 120px;
+}
+
+.left-box {
+    width: 30%;
+    color: #4a4a4a;
+    background-color: #ffffff; /* White background for contrast */
+    padding: 20px;
+    border: 1px solid #ffcccc; /* Soft pink border */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1); /* Soft pink shadow */
+    text-align: center;
+    overflow-y: auto; /* Enable scrolling for the left box */
+    max-height: 80vh; /* Limit the height to 80% of the viewport height */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+
+/* Custom scrollbar for .left-box */
+.left-box::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.left-box::-webkit-scrollbar-thumb {
+    background: #ffcccc; /* Soft pink scrollbar thumb */
+    border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+.left-box::-webkit-scrollbar-thumb:hover {
+    background: #ff9999; /* Slightly darker pink on hover */
+}
+
+.left-box::-webkit-scrollbar-track {
+    background: #fff5f5; /* Soft pink scrollbar track */
+    border-radius: 4px; /* Rounded corners for the track */
+}
+
+.left-box h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    font-weight: 600; /* Bold for headings */
+    color: #ff6b6b; /* Soft strawberry red for accent */
+}
+
+.left-box p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #666666; /* Slightly lighter text for paragraphs */
+}
+
+.right-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    overflow-y: auto; /* Enable scrolling for the right content if needed */
+    max-height: 80vh; /* Limit the height to 80% of the viewport height */
+}
+
+.button {
+    display: inline-block;
+    background-color: #ff6b6b; /* Soft strawberry red */
+    border: none;
+    color: #ffffff; /* White text */
+    padding: 15px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    text-transform: capitalize;
+    transition: all 0.3s ease-in-out;
+    margin: 10px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500; /* Medium weight for buttons */
+}
+
+.button:hover {
+    background-color: #ff4c4c; /* Slightly darker strawberry red on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.2); /* Soft pink shadow on hover */
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.button-row:first-child {
+    margin-top: 20px;
+}
+
+.button-row a {
+    margin: 10px;
+}
+
+#p1 {
+    text-transform: capitalize;
+}
+
+.scrollable-text {
+    height: auto; /* Remove fixed height */
+    overflow-y: visible; /* Disable scrolling */
+    padding: 15px;
+    border: 1px solid #ffcccc; /* Soft pink border */
+    background-color: #ffffff; /* White background */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1); /* Soft pink shadow */
+}
+
+.scrollable-text::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-text::-webkit-scrollbar-thumb {
+    background: #ffcccc; /* Soft pink scrollbar thumb */
+    border-radius: 4px;
+}
+
+.scrollable-text::-webkit-scrollbar-thumb:hover {
+    background: #ff9999; /* Slightly darker pink on hover */
+}
+
+.scrollable-text::-webkit-scrollbar-track {
+    background: #fff5f5; /* Soft pink scrollbar track */
+}
+
+#red {
+    color: #ff6b6b; /* Soft strawberry red */
+    font-weight: 500; /* Slightly bolder */
+}
+
+#orange {
+    color: #ffa94d; /* Soft orange */
+    font-weight: 500; /* Slightly bolder */
+}
+
+#green {
+    color: #6bff6b; /* Soft green */
+    font-weight: 500; /* Slightly bolder */
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Style</title>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            font-family: 'Arial', sans-serif;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+            text-align: center;
+        }
+
+        .style-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 60px;
+        }
+
+        .style-card {
+            width: 200px;
+            height: 120px;
+            background-color: #222;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .style-card:hover {
+            border-color: #00ffff;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        .style-card h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .style-card p {
+            font-size: 0.9em;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.8em;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select Your Schedule Style</h1>
+    <div class="style-grid">
+        <div class="style-card" onclick="selectStyle('style1')">
+            <h3>Style 1</h3>
+            <p>Dark Theme X Neon Lime</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style2')">
+            <h3>Style 2</h3>
+            <p>Dark Theme X Neon Cyan</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style3')">
+            <h3>Style 3</h3>
+            <p>StrawBerry Yogurt</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style4')">
+            <h3>Style 4</h3>
+            <p>Red-Cafe Vibe</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style5')">
+            <h3>Style 5</h3>
+            <p>Business Website</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style6')">
+            <h3>Style 6</h3>
+            <p>Cartoonish Purple</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style7')">
+            <h3>Style 7</h3>
+            <p>Respectable Target</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style8')">
+            <h3>Style 8</h3>
+            <p>Mint Pastry</p>
+        </div>
+        <div class="style-card" onclick="selectStyle('style9')">
+            <h3>Style 9</h3>
+            <p>Cherry Delight</p>
+        </div>
+    </div>
+
+    <footer>&copy; 2025 Shaikh Zain. Made with 💻 and ☕</footer>
+
+    <script>
+        function selectStyle(style) {
+            // Store the chosen style in sessionStorage
+            sessionStorage.setItem('selectedStyle', style);
+
+            // Redirect to Schedule.html immediately
+            window.location.href = 'Schedule.html';
+        }
+    </script>
+</body>
+</html>

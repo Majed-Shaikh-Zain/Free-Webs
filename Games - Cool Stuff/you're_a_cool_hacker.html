@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Infinite Digital Rain</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black; /* Deep black background */
+      overflow: hidden;
+      cursor: none; /* Hide the default cursor */
+    }
+    canvas {
+      display: block;
+    }
+    .cursor {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+    }
+    .cursor::before {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 20px solid cyan; /* Glowing cyan droplet */
+      top: 0;
+      left: 0;
+      transform: rotate(45deg); /* Rotate to create a droplet-like shape */
+      border-radius: 50%; /* Smooth edges for a natural look */
+      box-shadow: 0 0 10px cyan, 0 0 20px cyan; /* Add glow effect */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="rainCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("rainCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas dimensions to fill the screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const streams = [];
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()-_=+[]{}|;:,.<>?";
+
+    // Create a new stream
+    function createStream(event) {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      streams.push({
+        x,
+        y,
+        speed: Math.random() * 5 + 2, // Random speed
+        length: Math.floor(Math.random() * 10 + 5), // Random length
+        chars: Array.from({ length: 15 }, () => characters[Math.floor(Math.random() * characters.length)]),
+      });
+    }
+
+    // Update streams
+    function updateStreams() {
+      streams.forEach((stream) => {
+        stream.y += stream.speed;
+
+        // Reset stream if it goes off-screen
+        if (stream.y > canvas.height) {
+          stream.y = -stream.length * 20; // Reset to top
+        }
+      });
+    }
+
+    // Draw streams on the canvas
+    function drawStreams() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      streams.forEach((stream) => {
+        ctx.fillStyle = "rgba(0, 255, 255, 0.8)"; // Cyan color
+        ctx.font = "20px monospace";
+
+        for (let i = 0; i < stream.chars.length; i++) {
+          const opacity = 1 - i / stream.chars.length; // Fade out characters
+          ctx.fillStyle = `rgba(0, 255, 255, ${opacity})`;
+          ctx.fillText(stream.chars[i], stream.x, stream.y + i * 20);
+        }
+      });
+    }
+
+    // Handle mouse movement for glowing cursor
+    function moveCursor(event) {
+      const cursor = document.querySelector(".cursor");
+      if (!cursor) {
+        const newCursor = document.createElement("div");
+        newCursor.classList.add("cursor");
+        document.body.appendChild(newCursor);
+      }
+      const cursorElement = document.querySelector(".cursor");
+      cursorElement.style.left = `${event.clientX - 10}px`; // Center horizontally
+      cursorElement.style.top = `${event.clientY - 20}px`; // Align the tip
+    }
+
+    // Handle window resizing
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Initialize
+    setInterval(() => {
+      updateStreams();
+      drawStreams();
+    }, 16); // Redraw every frame (~60fps)
+    document.addEventListener("click", createStream);
+    document.addEventListener("mousemove", moveCursor);
+  </script>
+</body>
+</html>

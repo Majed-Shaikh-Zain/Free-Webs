@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Infinite Liquid Grid</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black; /* Pure black background */
+      overflow: hidden;
+      cursor: none; /* Hide the default cursor */
+    }
+    canvas {
+      display: block;
+    }
+    .cursor {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: white; /* Pure white cursor */
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gridCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gridCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas dimensions to fill the screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const gridSize = 20; // Size of each grid cell
+    const rows = Math.ceil(canvas.height / gridSize);
+    const cols = Math.ceil(canvas.width / gridSize);
+    const grid = Array.from({ length: rows + 2 }, () => Array(cols + 2).fill(0)); // Add buffer rows/cols
+    const damping = 0.97; // Damping factor for wave decay
+
+    // Update the grid with ripple effects
+    function updateGrid() {
+      const nextGrid = Array.from({ length: rows + 2 }, () => Array(cols + 2).fill(0));
+
+      for (let i = 1; i < rows + 1; i++) {
+        for (let j = 1; j < cols + 1; j++) {
+          nextGrid[i][j] =
+            (grid[i - 1][j] +
+             grid[i + 1][j] +
+             grid[i][j - 1] +
+             grid[i][j + 1]) /
+            2 -
+            nextGrid[i][j];
+          nextGrid[i][j] *= damping;
+        }
+      }
+
+      // Copy the updated grid back to the main grid
+      for (let i = 1; i < rows + 1; i++) {
+        for (let j = 1; j < cols + 1; j++) {
+          grid[i][j] = nextGrid[i][j];
+        }
+      }
+    }
+
+    // Draw the grid on the canvas
+    function drawGrid() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 1; i < rows + 1; i++) {
+        for (let j = 1; j < cols + 1; j++) {
+          const x = (j - 1) * gridSize;
+          const y = (i - 1) * gridSize;
+          const offset = grid[i][j] * 3; // Scale the ripple effect
+
+          // Monochrome color palette: Black, white, and gray
+          const lightness = 50 + Math.abs(offset) * 10; // Adjust brightness based on ripple intensity
+          ctx.fillStyle = `hsl(0, 0%, ${Math.min(lightness, 90)}%)`; // Gray scale
+          ctx.fillRect(x + offset, y + offset, gridSize, gridSize);
+        }
+      }
+    }
+
+    // Handle mouse movement to create ripples
+    function createRipple(event) {
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+
+      const col = Math.floor(mouseX / gridSize) + 1; // Offset by buffer
+      const row = Math.floor(mouseY / gridSize) + 1; // Offset by buffer
+
+      if (row >= 1 && row < rows + 1 && col >= 1 && col < cols + 1) {
+        grid[row][col] = 5; // Create a ripple at the mouse position
+      }
+    }
+
+    // Handle mouse movement for glowing cursor
+    function moveCursor(event) {
+      const cursor = document.querySelector(".cursor");
+      if (!cursor) {
+        const newCursor = document.createElement("div");
+        newCursor.classList.add("cursor");
+        document.body.appendChild(newCursor);
+      }
+      const cursorElement = document.querySelector(".cursor");
+      cursorElement.style.left = `${event.clientX}px`;
+      cursorElement.style.top = `${event.clientY}px`;
+    }
+
+    // Handle window resizing
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Initialize
+    setInterval(() => {
+      updateGrid();
+      drawGrid();
+    }, 16); // Redraw every frame (~60fps)
+    document.addEventListener("mousemove", createRipple);
+    document.addEventListener("mousemove", moveCursor);
+  </script>
+</body>
+</html>

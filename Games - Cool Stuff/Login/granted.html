@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Granted</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+            color: #fff;
+            font-family: 'Roboto Mono', monospace;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            border: 2px solid #00ff00;
+            padding: 2rem;
+            background-color: #222;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            animation: border-glow 2s infinite alternate;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin: 0;
+            color: #00ff00;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin: 1rem 0 0;
+            color: #ccc;
+        }
+
+        button {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #00cc00;
+        }
+
+        @keyframes border-glow {
+            from {
+                box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            }
+            to {
+                box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Access Granted</h1>
+        <p>Welcome, authorized user. You have been granted access.</p>
+        <p>Proceed with caution.</p>
+        <button id="activate-button">Activate Makana</button>
+    </div>
+
+    <script>
+        // JavaScript to handle button click
+        document.getElementById('activate-button').addEventListener('click', async () => {
+            try {
+                // Send a request to the backend to trigger the Python script
+                const response = await fetch('http://127.0.0.1:5000/activate-makana', {
+                    method: 'POST',
+                });
+
+                if (response.ok) {
+                    alert('Makana has been activated!');
+                } else {
+                    alert('Failed to activate Makana. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please check the console.');
+            }
+        });
+    </script>
+</body>
+</html>

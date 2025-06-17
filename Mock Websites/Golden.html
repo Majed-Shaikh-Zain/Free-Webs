@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand - Luxury Business Excellence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .luxury-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.02) 0%, transparent 50%),
+                linear-gradient(135deg, #000000 0%, #0d0d0d 50%, #000000 100%);
+            z-index: -1;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 2px solid #ffd700;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .logo::before {
+            content: '◆';
+            position: absolute;
+            left: -40px;
+            top: 0;
+            color: #ffd700;
+            font-size: 2rem;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ffd700, transparent);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ffd700;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+        }
+
+        .nav-link:hover::before {
+            width: 100%;
+        }
+
+        .luxury-btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000000;
+            padding: 1rem 2.5rem;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .luxury-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="0" y="0" width="100" height="100" fill="%23000000"/><path d="M25,25 L75,25 L75,75 L25,75 Z" stroke="%23ffd700" stroke-width="0.5" fill="none" opacity="0.1"/><circle cx="50" cy="50" r="15" stroke="%23ffd700" stroke-width="0.3" fill="none" opacity="0.1"/></svg>');
+            background-size: 200px 200px;
+            position: relative;
+            padding-top: 100px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 49%, rgba(255, 215, 0, 0.02) 50%, transparent 51%);
+            background-size: 40px 40px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 4.5rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .hero-text h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, transparent);
+        }
+
+        .hero-text .tagline {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #ffd700;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        .hero-visual {
+            text-align: center;
+            position: relative;
+        }
+
+        .luxury-emblem {
+            width: 300px;
+            height: 300px;
+            border: 3px solid #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+        }
+
+        .luxury-emblem::before {
+            content: '◆';
+            font-size: 8rem;
+            color: #ffd700;
+            animation: pulse-gold 3s ease-in-out infinite;
+        }
+
+        .orbit-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+        }
+
+        .orbit-ring::before {
+            content: '◆';
+            position: absolute;
+            top: 5px; /* was -10px, now 40px from top */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffd700;
+            font-size: 1.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #000000;
+            padding: 1.3rem 3rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: #ffd700;
+            border: 2px solid #ffd700;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.5);
+        }
+
+        .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #ffd700;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #cccccc;
+            margin-bottom: 4rem;
+            font-style: italic;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(0, 0, 0, 0.8) 100%);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .about-text {
+            background: rgba(255, 215, 0, 0.05);
+            padding: 4rem;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+        }
+
+        .about-text::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ffd700, transparent, #ffd700);
+            z-index: -1;
+            border-radius: inherit;
+        }
+
+        .about-text h3 {
+            color: #ffd700;
+            margin-bottom: 2rem;
+            font-size: 2.2rem;
+            font-weight: 600;
+        }
+
+        .about-text p {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: #ffffff;
+            line-height: 1.8;
+        }
+
+        .luxury-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ffd700;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.8s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            color: #ffd700;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .stat-label {
+            color: #ffffff;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .services-luxury {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            padding: 3rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: #ffd700;
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+        }
+
+        .service-icon {
+            font-size: 4rem;
+            color: #ffd700;
+            margin-bottom: 2rem;
+            display: block;
+            text-align: center;
+        }
+
+        .service-title {
+            color: #ffd700;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .service-description {
+            color: #cccccc;
+            line-height: 1.8;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .contact {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 0, 0, 0.9) 100%);
+        }
+
+        .contact-luxury {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .contact-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ffd700;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.3);
+        }
+
+        .contact-icon {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .contact-title {
+            color: #ffd700;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .contact-details {
+            color: #ffffff;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .luxury-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+
+            .luxury-emblem {
+                width: 200px;
+                height: 200px;
+            }
+
+            .orbit-ring {
+                width: 280px;
+                height: 280px;
+            }
+
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 2rem;
+            }
+
+            .nav-menu {
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="luxury-pattern"></div>
+    
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">Brand</a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="luxury-btn">Excellence Awaits</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Luxury Business Excellence</h1>
+                        <div class="tagline">Where Premium Meets Performance</div>
+                        <p>Brand represents the pinnacle of business excellence. We deliver sophisticated solutions with uncompromising quality, crafted for discerning leaders who demand nothing but the finest.</p>
+                        <a href="#contact" class="cta-button">Discover Excellence</a>
+                        <a href="#services" class="cta-button secondary">Premium Services</a>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="luxury-emblem"></div>
+                        <div class="orbit-ring"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section about">
+            <div class="container">
+                <h2 class="section-title">Distinguished Heritage</h2>
+                <p class="section-subtitle">A legacy of excellence, built on principles of luxury, integrity, and unparalleled service</p>
+                
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Our Philosophy</h3>
+                        <p>At Brand, we believe that true excellence is not just about results—it's about the refined approach, the attention to detail, and the commitment to creating extraordinary experiences.</p>
+                        
+                        <h3>Exclusive Standards</h3>
+                        <p>We maintain the highest standards in every aspect of our work, from our carefully selected clientele to our meticulously crafted solutions that reflect luxury and sophistication.</p>
+                        
+                        <h3>Premium Promise</h3>
+                        <p>Our commitment extends beyond mere service delivery. We forge lasting partnerships with visionary leaders who share our dedication to excellence and distinction.</p>
+                    </div>
+                    
+                    <div class="luxury-stats">
+                        <div class="stat-card">
+                            <span class="stat-number">10+</span>
+                            <span class="stat-label">Years of Excellence</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">Premium Projects</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">100+</span>
+                            <span class="stat-label">Distinguished Clients</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Concierge Support</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <div class="container">
+                <h2 class="section-title">Premium Services</h2>
+                <p class="section-subtitle">Exclusively crafted solutions for leaders who demand excellence in every detail</p>
+                
+                <div class="services-luxury">
+                    <div class="service-card">
+                        <span class="service-icon">◆</span>
+                        <h3 class="service-title">Executive Strategy</h3>
+                        <p class="service-description">Bespoke strategic consulting for C-suite executives, delivering sophisticated solutions that drive extraordinary results and sustainable competitive advantage.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <span class="service-icon">♛</span>
+                        <h3 class="service-title">Premium Branding</h3>
+                        <p class="service-description">Luxury brand development that embodies sophistication and prestige, creating distinctive identities that resonate with affluent audiences and premium markets.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <span class="service-icon">⚜</span>
+                        <h3 class="service-title">Elite Operations</h3>
+                        <p class="service-description">Refined operational excellence programs that optimize performance while maintaining the highest standards of quality and sophisticated business practices.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <span class="service-icon">◇</span>
+                        <h3 class="service-title">Exclusive Advisory</h3>
+                        <p class="service-description">Personalized business advisory services for select clients, providing privileged access to industry insights and strategic guidance from seasoned experts.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <span class="service-icon">♜</span>
+                        <h3 class="service-title">Luxury Markets</h3>
+                        <p class="service-description">Specialized market expansion strategies for luxury goods and premium services, connecting brands with sophisticated consumers and exclusive channels.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <span class="service-icon">♕</span>
+                        <h3 class="service-title">Concierge Innovation</h3>
+                        <p class="service-description">White-glove innovation consulting that transforms visionary ideas into market-leading solutions with uncompromising attention to detail and execution.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section contact">
+            <div class="container">
+                <h2 class="section-title">Connect With Excellence</h2>
+                <p class="section-subtitle">Experience the distinction of working with true professionals who understand the value of excellence</p>
+                
+                <div class="contact-luxury">
+                    <div class="contact-card">
+                        <span class="contact-icon">◆</span>
+                        <h3 class="contact-title">Executive Communication</h3>
+                        <div class="contact-details">
+                            <p><strong>executive@brand.com</strong></p>
+                            <p>Direct access to our leadership team</p>
+                            <p>Response within 4 business hours</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <span class="contact-icon">♛</span>
+                        <h3 class="contact-title">Private Consultation</h3>
+                        <div class="contact-details">
+                            <p><strong>+1 (555) 123-LUXURY</strong></p>
+                            <p>Confidential strategic discussions</p>
+                            <p>Available Monday - Friday, 9 AM - 6 PM EST</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <span class="contact-icon">⚜</span>
+                        <h3 class="contact-title">Premium Location</h3>
+                        <div class="contact-details">
+                            <p><strong>123 Executive Plaza</strong></p>
+                            <p>Penthouse Suite 5000</p>
+                            <p>New York, NY 10001</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-card">
+                        <span class="contact-icon">◇</span>
+                        <h3 class="contact-title">Exclusive Access</h3>
+                        <div class="contact-details">
+                            <p><strong>VIP Client Portal</strong></p>
+                            <p>24/7 premium support</p>
+                            <p>Dedicated account management</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: linear-gradient(45deg, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.8)); padding: 4rem; border: 2px solid #ffd700; margin-top: 4rem; text-align: center;">
+                    <h3 style="color: #ffd700; margin-bottom: 1.5rem; font-size: 2.2rem;">Ready for Excellence?</h3>
+                    <p style="color: #ffffff; margin-bottom: 2.5rem; font-size: 1.3rem; font-style: italic;">Join an exclusive circle of leaders who demand nothing but the finest in business solutions.</p>
+                    <a href="#" class="cta-button">Schedule Private Consultation</a>
+                    <a href="#" class="cta-button secondary">Request Information</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background: rgba(0, 0, 0, 0.95); border-top: 2px solid #ffd700; color: #ffffff; text-align: center; padding: 3rem 0;">
+        <div class="container">
+            <p style="font-size: 1.2rem; margin-bottom: 1rem; color: #ffd700;">◆ © 2024 Brand - Premium Business Excellence ◆</p>
+            <p style="opacity: 0.8;">Where luxury meets performance, and excellence is the standard.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerHeight = 100;
+                    const targetPosition = target.offsetTop - headerHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Luxury button effect
+        document.querySelector('.luxury-btn').addEventListener('click', function() {
+            this.textContent = 'Excellence Delivered';
+            this.style.background = 'linear-gradient(45deg, #ffed4e, #ffd700)';
+            setTimeout(() => {
+                this.textContent = 'Excellence Awaits';
+                this.style.background = 'linear-gradient(45deg, #ffd700, #ffed4e)';
+            }, 2000);
+        });
+
+        // Add scroll effect for luxury elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const emblem = document.querySelector('.luxury-emblem');
+            
+            if (emblem) {
+                emblem.style.transform = `rotate(${scrolled * 0.1}deg)`;
+            }
+        });
+
+        // Add entrance animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.service-card, .contact-card, .stat-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.8s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

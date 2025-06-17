@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Cosmic Particle Simulator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black; /* Deep space background */
+      overflow: hidden;
+      cursor: none; /* Hide the default cursor */
+    }
+    canvas {
+      display: block;
+    }
+    .cursor {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particleCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("particleCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas dimensions to fill the screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const colors = ["#ff6f61", "#61ff6f", "#6f61ff", "#f7ff61", "#ff61f7"];
+    const maxParticles = 100;
+
+    // Create random particles
+    function createParticles() {
+      for (let i = 0; i < maxParticles; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 5 + 2,
+          speedX: Math.random() * 2 - 1,
+          speedY: Math.random() * 2 - 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+        });
+      }
+    }
+
+    // Draw particles on the canvas
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((particle, index) => {
+        // Draw the particle
+        ctx.fillStyle = particle.color;
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Update position
+        particle.x += particle.speedX;
+        particle.y += particle.speedY;
+
+        // Bounce off edges
+        if (particle.x < 0 || particle.x > canvas.width) particle.speedX *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.speedY *= -1;
+
+        // Interact with other particles
+        particles.forEach((otherParticle, otherIndex) => {
+          if (index !== otherIndex) {
+            const dx = otherParticle.x - particle.x;
+            const dy = otherParticle.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+              // Draw connection lines between close particles
+              ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(particle.x, particle.y);
+              ctx.lineTo(otherParticle.x, otherParticle.y);
+              ctx.stroke();
+
+              // Apply attraction/repulsion forces
+              const force = 0.1 / distance;
+              const angle = Math.atan2(dy, dx);
+              particle.speedX += Math.cos(angle) * force;
+              particle.speedY += Math.sin(angle) * force;
+            }
+          }
+        });
+      });
+    }
+
+    // Handle mouse movement for glowing cursor
+    function moveCursor(event) {
+      const cursor = document.querySelector(".cursor");
+      if (!cursor) {
+        const newCursor = document.createElement("div");
+        newCursor.classList.add("cursor");
+        document.body.appendChild(newCursor);
+      }
+      const cursorElement = document.querySelector(".cursor");
+      cursorElement.style.left = `${event.clientX}px`;
+      cursorElement.style.top = `${event.clientY}px`;
+    }
+
+    // Handle window resizing
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Initialize
+    createParticles();
+    setInterval(drawParticles, 16); // Redraw every frame (~60fps)
+    document.addEventListener("mousemove", moveCursor);
+  </script>
+</body>
+</html>

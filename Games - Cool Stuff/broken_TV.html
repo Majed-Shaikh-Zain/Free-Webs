@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Signal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: black;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .stripes {
+            width: 100%;
+            height: 100%; /* Full height for SMPTE bars */
+            display: flex;
+        }
+        .stripe {
+            flex: 1;
+        }
+        .stripe:nth-child(1) { background: #FFFFFF; }
+        .stripe:nth-child(2) { background: #FFFF00; }
+        .stripe:nth-child(3) { background: #00FFFF; }
+        .stripe:nth-child(4) { background: #00FF00; }
+        .stripe:nth-child(5) { background: #FF00FF; }
+        .stripe:nth-child(6) { background: #FF0000; }
+        .stripe:nth-child(7) { background: #0000FF; }
+        .stripe:nth-child(8) { background: #000000; }
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 40px 80px; /* Larger rectangle */
+            background: rgba(0, 0, 0, 0.5); /* More transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0; /* Sharp 90-degree edges */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Add subtle shadow for depth */
+            z-index: 20; /* Ensure it's above the static canvas */
+        }
+        .text {
+            color: white;
+            font-size: 2rem; /* Larger font size */
+            text-transform: uppercase; /* Make text all caps */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .static {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 10; /* Below the text container */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="stripes">
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+            <div class="stripe"></div>
+        </div>
+        <div class="text-container">
+            <div class="text">no signal</div> <!-- Text will be transformed to uppercase -->
+        </div>
+        <canvas id="staticCanvas" class="static"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('staticCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas dimensions to match the viewport
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function drawStatic() {
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const randomValue = Math.random() * 255;
+                data[i] = randomValue;     // Red
+                data[i + 1] = randomValue; // Green
+                data[i + 2] = randomValue; // Blue
+                data[i + 3] = 255;         // Alpha
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function animateStatic() {
+            drawStatic();
+            requestAnimationFrame(animateStatic);
+        }
+
+        animateStatic();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

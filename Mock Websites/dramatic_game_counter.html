@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Infinite Chaos Counter</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: monospace;
+      overflow: hidden;
+      background-color: black;
+    }
+
+    body {
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+      background: radial-gradient(circle at 20% 20%, #000000, #000000),
+                  radial-gradient(circle at 80% 80%, #000000, #000000);
+      background-size: 400% 400%;
+      animation: lavaLamp 12s ease-in-out infinite;
+      opacity: 0;
+      transition: opacity 30s ease-in-out;
+    }
+
+    @keyframes lavaLamp {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #counter {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6vw;
+      color: white;
+      text-align: center;
+      will-change: transform, filter, opacity;
+      transition: all 0.2s ease-in-out;
+      z-index: 1;
+    }
+
+    .glow1 {
+      text-shadow: 0 0 10px #ff3333;
+    }
+
+    .glow2 {
+      text-shadow: 0 0 20px #ff3333, 0 0 40px #ff0000;
+    }
+
+    .glow3 {
+      text-shadow: 0 0 30px #ff3333, 0 0 60px #ff0000, 0 0 80px #ff6666;
+    }
+
+    .shake1 {
+      animation: shake1 0.15s infinite;
+    }
+
+    .shake2 {
+      animation: shake2 0.1s infinite;
+    }
+
+    .shake3 {
+      animation: shake3 0.05s infinite;
+    }
+
+    @keyframes shake1 {
+      0% { transform: translate(-50%, -50%) translate(0px); }
+      25% { transform: translate(-50%, -50%) translate(-2px, -1px); }
+      50% { transform: translate(-50%, -50%) translate(2px, 1px); }
+      75% { transform: translate(-50%, -50%) translate(-2px, 1px); }
+      100% { transform: translate(-50%, -50%) translate(0px); }
+    }
+
+    @keyframes shake2 {
+      0% { transform: translate(-50%, -50%) translate(0px); }
+      25% { transform: translate(-50%, -50%) translate(-4px, -2px); }
+      50% { transform: translate(-50%, -50%) translate(4px, 2px); }
+      75% { transform: translate(-50%, -50%) translate(-4px, 2px); }
+      100% { transform: translate(-50%, -50%) translate(0px); }
+    }
+
+    @keyframes shake3 {
+      0% { transform: translate(-50%, -50%) translate(0px); }
+      25% { transform: translate(-50%, -50%) translate(-6px, -3px); }
+      50% { transform: translate(-50%, -50%) translate(6px, 3px); }
+      75% { transform: translate(-50%, -50%) translate(-6px, 3px); }
+      100% { transform: translate(-50%, -50%) translate(0px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="counter">1</div>
+
+  <script>
+    const counter = document.getElementById("counter");
+    const background = document.body;
+
+    const startTime = performance.now();
+
+    const growthRate = 1.0003; // slower start
+    const multiplier = 800;    // slower virtual ticks
+
+    const levels = [
+      { threshold: 10n, classes: [] },
+      { threshold: 100n, classes: ['glow1'] },
+      { threshold: 1_000n, classes: ['glow2'] },
+      { threshold: 10_000n, classes: ['glow2', 'shake1'] },
+      { threshold: 100_000n, classes: ['glow2', 'shake2'] },
+      { threshold: 1_000_000n, classes: ['glow3', 'shake2'] },
+      { threshold: 10_000_000n, classes: ['glow3', 'shake3'] },
+      { threshold: 100_000_000n, classes: ['glow3', 'shake3'] },
+      { threshold: 1_000_000_000n, classes: ['glow3', 'shake3'] },
+      { threshold: 10n ** 100n, classes: ['glow3', 'shake3'] }
+    ];
+
+    function getCurrentCount() {
+      const elapsed = (performance.now() - startTime) / 1000;
+      return BigInt(Math.floor(Math.pow(growthRate, elapsed * multiplier)));
+    }
+
+    let currentLevelIndex = 0;
+
+    function update() {
+      const count = getCurrentCount();
+      counter.textContent = count.toLocaleString();
+
+      // Transition background glow
+      const opacityLevel = Math.min(1, (performance.now() - startTime) / 30000); // fade in over 30 seconds
+      document.body.style.setProperty('--bg-opacity', opacityLevel.toFixed(2));
+      document.body.style.setProperty('opacity', opacityLevel.toFixed(2));
+      document.body.querySelector("::before");
+
+      const before = document.querySelector("body::before");
+      if (before) before.style.opacity = opacityLevel.toFixed(2);
+
+      while (currentLevelIndex < levels.length && count >= levels[currentLevelIndex].threshold) {
+        currentLevelIndex++;
+      }
+
+      counter.className = "";
+      const effects = levels[currentLevelIndex - 1]?.classes || [];
+      effects.forEach(cls => counter.classList.add(cls));
+
+      requestAnimationFrame(update);
+    }
+
+    // Fade in red background after load
+    setTimeout(() => {
+      document.body.style.setProperty('opacity', 1);
+      document.body.style.setProperty('--bg-opacity', 1);
+      document.querySelector("body::before").style.opacity = "0.25";
+    }, 500);
+
+    update();
+  </script>
+</body>
+</html>

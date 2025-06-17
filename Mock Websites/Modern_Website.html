@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Name here</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-green: 142 69% 58%;
+            --dark-green: 142 69% 45%;
+            --accent-purple: 269 60% 65%;
+            --deep-purple: 269 60% 48%;
+            --light-green: 142 40% 88%;
+            --soft-purple: 269 30% 92%;
+            --neutral-50: 0 0% 98%;
+            --neutral-100: 0 0% 96%;
+            --neutral-200: 0 0% 93%;
+            --neutral-800: 0 0% 15%;
+            --neutral-900: 0 0% 9%;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: hsl(var(--neutral-50));
+            color: hsl(var(--neutral-800));
+            line-height: 1.6;
+            font-weight: 400;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid hsl(var(--neutral-200));
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: hsl(var(--dark-green));
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-link {
+            color: hsl(var(--neutral-800));
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, hsl(var(--primary-green)), hsl(var(--accent-purple)));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: hsl(var(--dark-green));
+        }
+
+        .cta-nav {
+            background: linear-gradient(135deg, hsl(var(--primary-green)), hsl(var(--dark-green)));
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .cta-nav:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px hsl(var(--primary-green) / 0.3);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, hsl(var(--neutral-50)), hsl(var(--light-green) / 0.3));
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, hsl(var(--soft-purple) / 0.4), hsl(var(--light-green) / 0.3));
+            clip-path: polygon(30% 0%, 100% 0%, 100% 100%, 0% 100%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        #hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: hsl(var(--neutral-900));
+        }
+
+        #hero-desc {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: hsl(var(--neutral-800) / 0.8);
+            line-height: 1.7;
+            max-width: 500px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: hsl(var(--dark-green));
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: hsl(var(--neutral-800) / 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, hsl(var(--primary-green)), hsl(var(--dark-green)));
+            color: white;
+            box-shadow: 0 4px 15px hsl(var(--primary-green) / 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px hsl(var(--primary-green) / 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: hsl(var(--dark-green));
+            border: 2px solid hsl(var(--primary-green));
+        }
+
+        .btn-secondary:hover {
+            background: hsl(var(--primary-green));
+            color: white;
+        }
+
+        .hero-image {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid hsl(var(--neutral-200));
+            position: relative;
+            max-width: 400px;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, hsl(var(--primary-green)), hsl(var(--accent-purple)));
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, hsl(var(--primary-green) / 0.1), hsl(var(--accent-purple) / 0.1));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: hsl(var(--neutral-900));
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            color: hsl(var(--neutral-800) / 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-features {
+            list-style: none;
+        }
+
+        .card-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: hsl(var(--neutral-800) / 0.8);
+        }
+
+        .card-features li::before {
+            content: '✓';
+            color: hsl(var(--primary-green));
+            font-weight: bold;
+        }
+
+        .section {
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: hsl(var(--neutral-900));
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: hsl(var(--neutral-800) / 0.7);
+            line-height: 1.6;
+        }
+
+        .about {
+            background: hsl(var(--neutral-100));
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: hsl(var(--dark-green));
+            margin-bottom: 1rem;
+        }
+
+        .about-content p {
+            color: hsl(var(--neutral-800) / 0.8);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-features {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .feature {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, hsl(var(--primary-green)), hsl(var(--accent-purple)));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .feature-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: hsl(var(--neutral-900));
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-content p {
+            font-size: 0.95rem;
+            color: hsl(var(--neutral-800) / 0.7);
+            margin: 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid hsl(var(--neutral-200));
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: hsl(var(--primary-green) / 0.3);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, hsl(var(--primary-green) / 0.1), hsl(var(--accent-purple) / 0.1));
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: hsl(var(--neutral-900));
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: hsl(var(--neutral-800) / 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-link {
+            color: hsl(var(--dark-green));
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-link:hover {
+            gap: 0.75rem;
+        }
+
+        .contact {
+            background: linear-gradient(135deg, hsl(var(--dark-green)), hsl(var(--deep-purple)));
+            color: white;
+        }
+
+        .contact .section-title,
+        .contact .section-subtitle {
+            color: white;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-top: 3rem;
+        }
+
+        .contact-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: hsl(var(--light-green));
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: hsl(var(--light-green) / 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .contact-details h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: hsl(var(--light-green));
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-details p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: hsl(var(--light-green));
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: hsl(var(--light-green));
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, hsl(var(--light-green)), hsl(var(--primary-green)));
+            color: hsl(var(--dark-green));
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            background: hsl(var(--neutral-900));
+            color: hsl(var(--neutral-200));
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: hsl(var(--neutral-200) / 0.8);
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-section a:hover {
+            color: hsl(var(--primary-green));
+        }
+
+        .footer-bottom {
+            border-top: 1px solid hsl(var(--neutral-800));
+            padding-top: 2rem;
+            font-size: 0.9rem;
+            color: hsl(var(--neutral-200) / 0.6);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                gap: 1.5rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .cta-nav {
+                order: -1;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .hero-image {
+                order: -1;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .about-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 4rem 0;
+            }
+        }
+
+        #hero-title,
+        #hero-desc {
+            color: transparent;
+            background: none;
+            background-image: linear-gradient(90deg, hsl(var(--primary-green)), hsl(var(--accent-purple)));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">brand</a>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <a href="#contact" class="cta-nav">Get Started</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 id="hero-title">
+                            Empowering <span class="highlight">Entrepreneurs</span> to Build Thriving Online Businesses
+                        </h1>
+                        <p id="hero-desc">
+                            Transform your passion into profit with our comprehensive business development solutions designed for ambitious people ready to make their mark in the digital world.
+                        </p>
+                        
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">200+</span>
+                                <span class="stat-label">Clients Helped</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">95%</span>
+                                <span class="stat-label">Success Rate</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">$2M+</span>
+                                <span class="stat-label">Revenue Generated</span>
+                            </div>
+                        </div>
+
+                        <div class="hero-buttons">
+                            <a href="#contact" class="btn btn-primary">Start Your Journey</a>
+                            <a href="#services" class="btn btn-secondary">View Services</a>
+                        </div>
+                    </div>
+
+                    <div class="hero-image">
+                        <div class="hero-card">
+                            <div class="card-icon">💼</div>
+                            <h3 class="card-title">Business Launch Package</h3>
+                            <p class="card-description">Everything you need to launch your online business successfully</p>
+                            <ul class="card-features">
+                                <li>Strategic business planning</li>
+                                <li>Brand identity development</li>
+                                <li>Professional website design</li>
+                                <li>Marketing strategy & launch</li>
+                                <li>Ongoing mentorship support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section about">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Why Choose Brand</h2>
+                    <p class="section-subtitle">We understand the unique challenges entrepreneurs face and provide tailored solutions for sustainable success.</p>
+                </div>
+
+                <div class="about-grid">
+                    <div class="about-content">
+                        <h3>Built by Entrepreneurs, for Entrepreneurs</h3>
+                        <p>Our team consists of successful business owners who have walked the path you're on. We combine strategic business expertise with an understanding of the unique challenges and opportunities faced in today's market.</p>
+                        
+                        <p>Every strategy we develop is designed to work with your lifestyle, values, and long-term vision, ensuring sustainable growth that doesn't compromise what matters most to you.</p>
+                    </div>
+
+                    <div class="about-features">
+                        <div class="feature">
+                            <div class="feature-icon">🎯</div>
+                            <div class="feature-content">
+                                <h4>Strategic Focus</h4>
+                                <p>Data-driven strategies tailored to your unique market position and goals</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">💡</div>
+                            <div class="feature-content">
+                                <h4>Creative Solutions</h4>
+                                <p>Innovative approaches that help you stand out in competitive markets</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🤝</div>
+                            <div class="feature-content">
+                                <h4>Personal Support</h4>
+                                <p>One-on-one mentorship and ongoing guidance throughout your journey</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">📈</div>
+                            <div class="feature-content">
+                                <h4>Proven Results</h4>
+                                <p>Track record of helping women build profitable, sustainable businesses</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Our Services</h2>
+                    <p class="section-subtitle">Comprehensive solutions to take your business from concept to profitability</p>
+                </div>
+
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🚀</div>
+                        <h3>Business Strategy & Planning</h3>
+                        <p>Develop a comprehensive business plan with market analysis, competitive positioning, and growth strategies tailored to your vision.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-icon">🎨</div>
+                        <h3>Brand Identity & Design</h3>
+                        <p>Create a compelling brand that resonates with your target audience and sets you apart from the competition.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-icon">💻</div>
+                        <h3>Website Development</h3>
+                        <p>Professional, conversion-optimized websites that showcase your expertise and drive business growth.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-icon">📱</div>
+                        <h3>Digital Marketing</h3>
+                        <p>Strategic marketing campaigns across social media, content marketing, and paid advertising to reach your ideal customers.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-icon">💰</div>
+                        <h3>Revenue Optimization</h3>
+                        <p>Pricing strategies, sales funnels, and conversion optimization to maximize your revenue potential.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <div class="service-card">
+                        <div class="service-icon">🎓</div>
+                        <h3>Business Mentorship</h3>
+                        <p>Ongoing support and guidance from experienced female entrepreneurs who understand your journey.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <!-- New Service 1 -->
+                    <div class="service-card">
+                        <div class="service-icon">🔗</div>
+                        <h3>Partnership & Networking</h3>
+                        <p>Connect with industry leaders and potential collaborators to expand your business opportunities and network.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+
+                    <!-- New Service 2 -->
+                    <div class="service-card">
+                        <div class="service-icon">🛡️</div>
+                        <h3>Business Compliance & Security</h3>
+                        <p>Ensure your business meets legal requirements and implements best practices for data privacy and online security.</p>
+                        <a href="#contact" class="service-link">Learn More →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section contact">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Ready to Start Building?</h2>
+                    <p class="section-subtitle">Let's discuss how we can help you turn your business dreams into reality</p>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3>Get in Touch</h3>
+                        
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p>hello@brand.com</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <p>+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">🕒</div>
+                            <div class="contact-details">
+                                <h4>Office Hours</h4>
+                                <p>Monday - Friday, 9AM - 6PM EST</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-details">
+                                <h4>Location</h4>
+                                <p>Remote & Online Consultations</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form">
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" placeholder="Your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="business">Business Stage</label>
+                                <input type="text" id="business" name="business" placeholder="Idea, Planning, Launch, Growth" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Tell us about your business goals</label>
+                                <textarea id="message" name="message" rows="4" placeholder="Describe your vision and how we can help..." required></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Brand</h4>
+                    <p>Empowering women entrepreneurs to build successful online businesses through strategic planning, creative solutions, and ongoing support.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <p><a href="#services">Business Strategy</a></p>
+                    <p><a href="#services">Brand Development</a></p>
+                    <p><a href="#services">Website Design</a></p>
+                    <p><a href="#services">Digital Marketing</a></p>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <p><a href="#contact">Contact Us</a></p>
+                    <p><a href="#about">About</a></p>
+                    <p><a href="#">Resources</a></p>
+                    <p><a href="#">Blog</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Brand. All rights reserved. Built for women entrepreneurs worldwide.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+            this.reset();
+        });
+
+        // Animate stats on scroll
+        const stats = document.querySelectorAll('.stat-number');
+        const animateStats = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const finalValue = target.textContent;
+                    let currentValue = 0;
+                    const increment = finalValue.includes('%') ? 1 : 10;
+                    const interval = setInterval(() => {
+                        currentValue += increment;
+                        if (finalValue.includes('%')) {
+                            target.textContent = currentValue + '%';
+                            if (currentValue >= 95) clearInterval(interval);
+                        } else if (finalValue.includes('M')) {
+                            target.textContent = '$' + (currentValue / 10).toFixed(1) + 'M+';
+                            if (currentValue >= 20) clearInterval(interval);
+                        } else {
+                            target.textContent = currentValue + '+';
+                            if (currentValue >= 200) clearInterval(interval);
+                        }
+                    }, 50);
+                    observer.unobserve(target);
+                }
+            });
+        };
+
+        const statsObserver = new IntersectionObserver(animateStats, {
+            threshold: 0.5
+        });
+
+        stats.forEach(stat => {
+            statsObserver.observe(stat);
+        });
+    </script>
+</body>
+</html>

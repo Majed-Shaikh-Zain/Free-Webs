@@ -1,0 +1,112 @@
+body {
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #ffecd1; /* Soft peach background from the first CSS */
+    margin: 0;
+    color: #4a4a4a; /* Soft dark gray for text */
+}
+
+.dashboard {
+    width: 90%;
+    max-width: 1200px;
+    background-color: #fff3e6; /* Soft peach background for contrast */
+    border: 2px solid #ff6f61; /* Vibrant coral border */
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(255, 111, 97, 0.3); /* Vibrant coral shadow */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+    grid-template-rows: auto; /* Allow rows to grow dynamically */
+    gap: 25px;
+    height: 80vh;
+    overflow-y: auto; /* Allow vertical scrolling */
+}
+
+.card {
+    background-color: #fff3e6; /* Soft peach background */
+    box-shadow: 0 4px 8px rgba(255, 111, 97, 0.3); /* Vibrant coral shadow */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 5px; /* Increase padding for better spacing */
+    text-align: center;
+    height: 100%; /* Ensure cards fill their grid cells */
+    border: 2px solid #ff6f61; /* Vibrant coral border */
+    overflow: hidden; /* Prevent content from overflowing */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(255, 111, 97, 0.5); /* Stronger vibrant coral shadow on hover */
+}
+
+.card button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff3e6; /* Soft peach text */
+    background-color: #ff6f61; /* Vibrant coral background */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    max-width: 150px;
+    white-space: normal;
+    word-wrap: break-word;
+    font-weight: 500; /* Medium weight for buttons */
+}
+
+.card button.red {
+    background-color: #ff0000; /* Dangerous red */
+    cursor: not-allowed;
+}
+
+.card button.orange {
+    background-color: #ffa94d; /* Soft orange */
+}
+
+.card.add-activity button {
+    background-color: #6bff6b; /* Soft green */
+}
+
+.card.add-activity button:hover {
+    background-color: #5ae85a; /* Slightly darker green on hover */
+}
+
+/* Gradient text effects from the first CSS */
+.gradient-text {
+    background: linear-gradient(90deg, #ff6f61, #fff3e6, #ff6f61);
+    background-clip: text;
+    font-weight: 600;
+    background-size: 400% 100%;
+    -webkit-text-fill-color: transparent;
+    animation: ytdc 7s linear infinite;
+}
+
+@keyframes ytdc {
+    0% {
+        background-position: 0%;
+    }
+    100% {
+        background-position: -400%;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard {
+        grid-template-columns: 1fr; /* 1 column on very small screens */
+    }
+}

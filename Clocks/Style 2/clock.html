@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Time Display</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-size: 2rem;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .clock, .date, .season, .day, .weather, .location, .battery {
+            margin: 15px 0;
+        }
+
+        .clock {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .date, .season, .day, .weather, .location, .battery {
+            font-size: 1.5rem;
+        }
+
+        .weather, .location, .battery {
+            font-size: 1.2rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="clock">
+            <div id="time"></div>
+        </div>
+        <div class="date">
+            <div id="date"></div>
+        </div>
+        <div class="season">
+            <div id="season"></div>
+        </div>
+        <div class="day">
+            <div id="day"></div>
+        </div>
+        <div class="weather">
+            <div id="weather"></div>
+        </div>
+        <div class="location">
+            <div id="location"></div>
+        </div>
+        <div class="battery">
+            <div id="battery"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const year = now.getFullYear();
+
+            const seasons = ["Winter", "Spring", "Summer", "Autumn"];
+            const monthDay = now.getMonth() * 100 + now.getDate();
+            const season = monthDay < 320 ? seasons[0] : monthDay < 621 ? seasons[1] : monthDay < 923 ? seasons[2] : monthDay < 1222 ? seasons[3] : seasons[0];
+
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayOfWeek = daysOfWeek[now.getDay()];
+
+            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').textContent = `${day}/${month}/${year}`;
+            document.getElementById('season').textContent = `Current Season: ${season}`;
+            document.getElementById('day').textContent = `Today is: ${dayOfWeek}`;
+        }
+
+        function updateWeather() {
+            // Placeholder for weather data
+            document.getElementById('weather').textContent = `Weather: Sunny, 25°C`;
+        }
+
+        function updateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    // Use a geolocation API to get the location name from coordinates
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('location').textContent = `Location: ${data.address.city}, ${data.address.country}`;
+                        })
+                        .catch(() => {
+                            document.getElementById('location').textContent = `Location: UAE, Sharjah`;
+                        });
+                }, () => {
+                    document.getElementById('location').textContent = `Location: UAE, Sharjah`;
+                });
+            } else {
+                document.getElementById('location').textContent = `Location: UAE, Sharjah`;
+            }
+        }
+
+        function updateBattery() {
+            navigator.getBattery().then(function(battery) {
+                const level = Math.round(battery.level * 100);
+                document.getElementById('battery').textContent = `Battery: ${level}%`;
+            });
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display the time immediately
+        updateWeather();
+        updateLocation();
+        updateBattery();
+    </script>
+</body>
+</html>

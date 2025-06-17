@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Infinite No Gravity Playground</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black; /* Deep black background */
+      overflow: hidden;
+      cursor: none; /* Hide the default cursor */
+    }
+    canvas {
+      display: block;
+    }
+    .cursor {
+      position: absolute;
+      width: 40px;
+      height: 10px;
+      pointer-events: none;
+      transform-origin: left center;
+      transform: rotate(45deg); /* Angle the comet tail */
+    }
+    .cursor::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 10px white, 0 0 20px white; /* Add glow effect */
+    }
+    .cursor::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      left: 10px;
+      top: 2.5px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.5); /* Add glowing tail */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gravityCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gravityCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas dimensions to fill the screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const objects = [];
+    let isDragging = false;
+    let startX, startY;
+
+    // Create a new object
+    function createObject(event) {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      // Add a new object with random mass and velocity
+      objects.push({
+        x,
+        y,
+        vx: 0,
+        vy: 0,
+        mass: Math.random() * 10 + 5, // Random mass between 5 and 15
+        radius: Math.random() * 10 + 5, // Random radius between 5 and 15
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`, // Random color
+      });
+    }
+
+    // Update object positions based on gravity
+    function updateObjects() {
+      for (let i = 0; i < objects.length; i++) {
+        for (let j = i + 1; j < objects.length; j++) {
+          const obj1 = objects[i];
+          const obj2 = objects[j];
+
+          // Calculate distance between objects
+          const dx = obj2.x - obj1.x;
+          const dy = obj2.y - obj1.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance === 0) continue; // Avoid division by zero
+
+          // Calculate gravitational force
+          const force = (obj1.mass * obj2.mass) / (distance * distance);
+
+          // Apply force to velocities
+          const angle = Math.atan2(dy, dx);
+          obj1.vx += (force * Math.cos(angle)) / obj1.mass;
+          obj1.vy += (force * Math.sin(angle)) / obj1.mass;
+          obj2.vx -= (force * Math.cos(angle)) / obj2.mass;
+          obj2.vy -= (force * Math.sin(angle)) / obj2.mass;
+        }
+      }
+
+      // Update positions
+      objects.forEach((obj) => {
+        obj.x += obj.vx;
+        obj.y += obj.vy;
+
+        // Wrap around edges
+        if (obj.x < 0) obj.x = canvas.width;
+        if (obj.x > canvas.width) obj.x = 0;
+        if (obj.y < 0) obj.y = canvas.height;
+        if (obj.y > canvas.height) obj.y = 0;
+      });
+    }
+
+    // Draw objects on the canvas
+    function drawObjects() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      objects.forEach((obj) => {
+        ctx.fillStyle = obj.color;
+        ctx.beginPath();
+        ctx.arc(obj.x, obj.y, obj.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    // Handle mouse movement for glowing cursor
+    function moveCursor(event) {
+      const cursor = document.querySelector(".cursor");
+      if (!cursor) {
+        const newCursor = document.createElement("div");
+        newCursor.classList.add("cursor");
+        document.body.appendChild(newCursor);
+      }
+      const cursorElement = document.querySelector(".cursor");
+      cursorElement.style.left = `${event.clientX}px`;
+      cursorElement.style.top = `${event.clientY}px`;
+    }
+
+    // Handle object creation and dragging
+    function startDrag(event) {
+      isDragging = true;
+      startX = event.clientX;
+      startY = event.clientY;
+    }
+
+    function endDrag(event) {
+      if (!isDragging) return;
+
+      const endX = event.clientX;
+      const endY = event.clientY;
+
+      // Create a new object with initial velocity based on drag direction
+      const obj = {
+        x: startX,
+        y: startY,
+        vx: (endX - startX) * 0.1, // Scale velocity
+        vy: (endY - startY) * 0.1, // Scale velocity
+        mass: Math.random() * 10 + 5, // Random mass between 5 and 15
+        radius: Math.random() * 10 + 5, // Random radius between 5 and 15
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`, // Random color
+      };
+
+      objects.push(obj);
+      isDragging = false;
+    }
+
+    // Handle window resizing
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Initialize
+    setInterval(() => {
+      updateObjects();
+      drawObjects();
+    }, 16); // Redraw every frame (~60fps)
+    document.addEventListener("mousedown", startDrag);
+    document.addEventListener("mouseup", endDrag);
+    document.addEventListener("mousemove", moveCursor);
+  </script>
+</body>
+</html>

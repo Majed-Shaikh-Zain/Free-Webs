@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Infinite Light Maze</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: black; /* Deep black background */
+      overflow: hidden;
+      cursor: none; /* Hide the default cursor */
+    }
+    canvas {
+      display: block;
+    }
+    .cursor {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: cyan;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform 0.1s ease;
+      box-shadow: 0 0 10px cyan, 0 0 20px cyan; /* Add glow effect */
+    }
+  </style>
+</head>
+<body>
+  <canvas id="mazeCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById("mazeCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set canvas dimensions to fill the screen
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const gridSize = 20; // Size of each grid cell
+    const rows = Math.ceil(canvas.height / gridSize);
+    const cols = Math.ceil(canvas.width / gridSize);
+    const grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+    const lights = [];
+    const maxLights = 50;
+
+    // Create random light sources
+    function createLight(event) {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      const col = Math.floor(x / gridSize);
+      const row = Math.floor(y / gridSize);
+
+      if (row >= 0 && row < rows && col >= 0 && col < cols) {
+        lights.push({ row, col, intensity: 1 });
+      }
+    }
+
+    // Update light propagation
+    function updateLights() {
+      const nextGrid = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+      lights.forEach((light) => {
+        const { row, col, intensity } = light;
+
+        // Spread light to neighboring cells
+        for (let i = -1; i <= 1; i++) {
+          for (let j = -1; j <= 1; j++) {
+            const newRow = row + i;
+            const newCol = col + j;
+
+            if (
+              newRow >= 0 &&
+              newRow < rows &&
+              newCol >= 0 &&
+              newCol < cols &&
+              grid[newRow][newCol] === 0
+            ) {
+              nextGrid[newRow][newCol] = Math.max(
+                nextGrid[newRow][newCol],
+                intensity * 0.8
+              );
+            }
+          }
+        }
+
+        // Decay light intensity
+        light.intensity *= 0.95;
+
+        // Remove light if it fades out
+        if (light.intensity < 0.1) {
+          lights.splice(lights.indexOf(light), 1);
+        }
+      });
+
+      // Copy the updated grid back to the main grid
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          grid[i][j] = Math.max(grid[i][j], nextGrid[i][j]);
+          grid[i][j] *= 0.95; // Gradual decay of light
+        }
+      }
+    }
+
+    // Draw the light maze on the canvas
+    function drawMaze() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          if (grid[i][j] > 0) {
+            const lightness = Math.min(grid[i][j] * 100, 100);
+            ctx.fillStyle = `hsl(180, 100%, ${lightness}%)`; // Cyan light
+            ctx.fillRect(j * gridSize, i * gridSize, gridSize, gridSize);
+          }
+        }
+      }
+    }
+
+    // Handle mouse movement to create walls
+    function createWall(event) {
+      const x = event.clientX;
+      const y = event.clientY;
+
+      const col = Math.floor(x / gridSize);
+      const row = Math.floor(y / gridSize);
+
+      if (row >= 0 && row < rows && col >= 0 && col < cols) {
+        grid[row][col] = 1; // Mark as a wall
+      }
+    }
+
+    // Handle mouse movement for glowing cursor
+    function moveCursor(event) {
+      const cursor = document.querySelector(".cursor");
+      if (!cursor) {
+        const newCursor = document.createElement("div");
+        newCursor.classList.add("cursor");
+        document.body.appendChild(newCursor);
+      }
+      const cursorElement = document.querySelector(".cursor");
+      cursorElement.style.left = `${event.clientX}px`;
+      cursorElement.style.top = `${event.clientY}px`;
+    }
+
+    // Handle window resizing
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Initialize
+    setInterval(() => {
+      updateLights();
+      drawMaze();
+    }, 16); // Redraw every frame (~60fps)
+    document.addEventListener("click", createLight);
+    document.addEventListener("mousemove", createWall);
+    document.addEventListener("mousemove", moveCursor);
+  </script>
+</body>
+</html>

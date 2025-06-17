@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #000000;
+    margin: 0;
+    /* overflow: hidden; */ /* Removed to allow scrolling */
+}
+
+/* Giant container wrapping all cards */
+.dashboard {
+    width: 90%; /* Make it responsive */
+    max-width: 1200px; /* Wider container */
+    background-color: #000000;
+    border: 2px solid #4caf50; /* Outline for the container */
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+    grid-template-rows: auto; /* Allow rows to grow dynamically */
+    gap: 25px; /* Increased gap between cards */
+    overflow-y: auto; /* Allow vertical scrolling */
+    min-height: 80vh; /* Minimum height to fit content */
+}
+
+/* Individual cards */
+.card {
+    background-color: #222; /* Dark background */
+    color: white; /* White text */
+    padding: 5px; /* Padding set to 5px */
+    border: 2px solid lime; /* Green border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; /* Glow effect */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center; /* Center text */
+    height: 100%; /* Cards fill the grid cell */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+/* Hover effect for cards */
+.card:hover {
+    transform: translateY(-5px); /* Lift card on hover */
+    box-shadow: 0 8px 16px rgb(30, 255, 0); /* Stronger glow on hover */
+}
+
+/* Buttons inside cards */
+.card button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #4caf50; /* Green */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%; /* Make buttons fill the card width */
+    max-width: 150px; /* Limit button width */
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words */
+}
+
+/* Red for uncontrollable events */
+.card button.red {
+    background-color: #f44336; /* Red */
+    cursor: not-allowed; /* Disable clicking */
+}
+
+/* Orange when clicked */
+.card button.orange {
+    background-color: #ff9800; /* Orange */
+}
+
+
+
+/* Add Activity Button */
+.card.add-activity button {
+    background-color: #2196f3; /* Blue */
+}
+
+.card.add-activity button:hover {
+    background-color: #1e88e5; /* Darker blue on hover */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 800px) {
+    .dashboard {
+        grid-template-columns: repeat(3, 1fr); /* Switch to 3 columns */
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .dashboard {
+        grid-template-columns: 1fr; /* Single column for very small screens */
+    }
+}/* Red for uncontrollable events */

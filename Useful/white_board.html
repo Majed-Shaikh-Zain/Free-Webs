@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Digital Whiteboard</title>
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #f59e0b;
+      --accent-color: #10b981;
+      --danger-color: #ef4444;
+      --background-light: #ffffff;
+      --text-light: #333333;
+      --toolbar-light: #f8f9fa;
+      --border-light: #dee2e6;
+      --card-light: #ffffff;
+      --background-dark: #1a1a1a;
+      --text-dark: #f8f9fa;
+      --toolbar-dark: #2d2d2d;
+      --border-dark: #444444;
+      --card-dark: #333333;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--background-light);
+      color: var(--text-light);
+      transition: background 0.3s ease, color 0.3s ease;
+      height: 100vh;
+      overflow: hidden;
+      touch-action: none;
+      user-select: none;
+    }
+    
+    body.dark-mode {
+      background: var(--background-dark);
+      color: var(--text-dark);
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      background: var(--toolbar-light);
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.3s ease, border-color 0.3s ease;
+      z-index: 10;
+    }
+    
+    .dark-mode .header {
+      background: var(--toolbar-dark);
+      border-color: var(--border-dark);
+    }
+    
+    .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+    }
+    
+    .header-actions button {
+      margin-left: 0.5rem;
+    }
+    
+    .main-toolbar {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: var(--toolbar-light);
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.3s ease, border-color 0.3s ease;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      z-index: 9;
+    }
+    
+    .dark-mode .main-toolbar {
+      background: var(--toolbar-dark);
+      border-color: var(--border-dark);
+    }
+    
+    .toolbar-section {
+      display: flex;
+      align-items: center;
+      padding: 0 0.5rem;
+      border-right: 1px solid var(--border-light);
+      margin-right: 0.5rem;
+    }
+    
+    .dark-mode .toolbar-section {
+      border-color: var(--border-dark);
+    }
+    
+    .toolbar-section:last-child {
+      border-right: none;
+    }
+    
+    .toolbar-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: inherit;
+      position: relative;
+    }
+    
+    .toolbar-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .dark-mode .toolbar-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .toolbar-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .toolbar-btn i {
+      font-size: 1.2rem;
+    }
+    
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: var(--card-light);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem;
+      z-index: 100;
+      min-width: 180px;
+      max-height: 300px;
+      overflow-y: auto;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .dark-mode .dropdown-content {
+      background: var(--card-dark);
+      border-color: var(--border-dark);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .dropdown-content.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+    
+    .dropdown-item:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .dark-mode .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .brush-size {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+    }
+    
+    .brush-size label {
+      margin-right: 0.5rem;
+      min-width: 60px;
+    }
+    
+    .range-slider {
+      width: 100px;
+      height: 8px;
+      -webkit-appearance: none;
+      background: var(--border-light);
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    
+    .dark-mode .range-slider {
+      background: var(--border-dark);
+    }
+    
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+      padding: 0.5rem;
+    }
+    
+    .color-option {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+    
+    .color-option.active {
+      border-color: var(--text-light);
+      transform: scale(1.1);
+    }
+    
+    .dark-mode .color-option.active {
+      border-color: var(--text-dark);
+    }
+    
+    .custom-color {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+    }
+    
+    .custom-color label {
+      margin-right: 0.5rem;
+    }
+    
+    .custom-color input[type="color"] {
+      border: none;
+      border-radius: 4px;
+      height: 25px;
+      width: 25px;
+      cursor: pointer;
+    }
+    
+    .canvas-container {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      background: var(--background-light);
+      transition: background 0.3s ease;
+    }
+    
+    .dark-mode .canvas-container {
+      background: var(--background-dark);
+    }
+    
+    #whiteboard {
+      position: absolute;
+      top: 0;
+      left: 0;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    
+    .menu-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    
+    .menu-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .tooltip {
+      position: absolute;
+      background: var(--card-light);
+      color: var(--text-light);
+      padding: 0.5rem;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      font-size: 0.8rem;
+      white-space: nowrap;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 200;
+    }
+    
+    .dark-mode .tooltip {
+      background: var(--card-dark);
+      color: var(--text-dark);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .toolbar-btn:hover .tooltip {
+      opacity: 1;
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal {
+      background: var(--card-light);
+      color: var(--text-light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    .dark-mode .modal {
+      background: var(--card-dark);
+      color: var(--text-dark);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-body h3 {
+      margin: 1rem 0 0.5rem 0;
+    }
+    
+    .settings-row {
+      display: flex;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    
+    .settings-row label {
+      flex: 1;
+    }
+    
+    .settings-option {
+      display: flex;
+      align-items: center;
+      margin: 0.5rem 0;
+    }
+    
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin-left: 10px;
+    }
+    
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary-color);
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px var(--primary-color);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    .button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    
+    .button-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .button-primary:hover {
+      background: #3a80d2;
+    }
+    
+    .button-secondary {
+      background: var(--border-light);
+      color: var(--text-light);
+    }
+    
+    .dark-mode .button-secondary {
+      background: var(--border-dark);
+      color: var(--text-dark);
+    }
+    
+    .button-secondary:hover {
+      background: #d0d7de;
+    }
+    
+    .dark-mode .button-secondary:hover {
+      background: #535353;
+    }
+    
+    .buttons-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    
+    .pen-pressure-indicator {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-left: 0.5rem;
+      border: 1px solid var(--border-light);
+      background: white;
+      transition: background 0.2s ease;
+    }
+    
+    .dark-mode .pen-pressure-indicator {
+      border-color: var(--border-dark);
+      background: #333;
+    }
+    
+    .status-indicator {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--card-light);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      pointer-events: none;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    
+    .dark-mode .status-indicator {
+      background: var(--card-dark);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .canvas-controls {
+      position: fixed;
+      bottom: 20px;
+      right: 80px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+    
+    .canvas-controls button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--card-light);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    }
+    
+    .dark-mode .canvas-controls button {
+      background: var(--card-dark);
+      color: var(--text-dark);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .canvas-controls button:hover {
+      transform: scale(1.05);
+    }
+    
+    @media (max-width: 768px) {
+      .main-toolbar {
+        padding: 0.25rem 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .toolbar-btn {
+        width: 36px;
+        height: 36px;
+      }
+      
+      .toolbar-section {
+        padding: 0 0.25rem;
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+      
+      .title {
+        font-size: 1.2rem;
+      }
+      
+      .canvas-controls {
+        right: 70px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .main-toolbar {
+        justify-content: center;
+      }
+      
+      .toolbar-btn {
+        width: 32px;
+        height: 32px;
+      }
+      
+      .toolbar-btn i {
+        font-size: 1rem;
+      }
+      
+      .title {
+        font-size: 1rem;
+      }
+      
+      .header-actions button {
+        margin-left: 0.25rem;
+      }
+      
+      .canvas-controls {
+        right: 70px;
+        bottom: 80px;
+      }
+      
+      .status-indicator {
+        bottom: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">Advanced Digital Whiteboard</div>
+      <div class="header-actions">
+        <button id="clearButton" class="toolbar-btn" title="Clear Canvas">
+          <i class="fas fa-trash-alt"></i>
+          <span class="tooltip">Clear Canvas</span>
+        </button>
+        <button id="saveButton" class="toolbar-btn" title="Save">
+          <i class="fas fa-save"></i>
+          <span class="tooltip">Save</span>
+        </button>
+        <button id="settingsButton" class="toolbar-btn" title="Settings">
+          <i class="fas fa-cog"></i>
+          <span class="tooltip">Settings</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="main-toolbar">
+      <div class="toolbar-section">
+        <button id="penTool" class="toolbar-btn active" title="Pen">
+          <i class="fas fa-pen"></i>
+          <span class="tooltip">Pen (P)</span>
+        </button>
+        <button id="highlighterTool" class="toolbar-btn" title="Highlighter">
+          <i class="fas fa-highlighter"></i>
+          <span class="tooltip">Highlighter (H)</span>
+        </button>
+        <button id="eraserTool" class="toolbar-btn" title="Eraser">
+          <i class="fas fa-eraser"></i>
+          <span class="tooltip">Eraser (E)</span>
+        </button>
+      </div>
+      
+      <div class="toolbar-section">
+        <div class="dropdown">
+          <button id="shapeTool" class="toolbar-btn" title="Shapes">
+            <i class="fas fa-shapes"></i>
+            <span class="tooltip">Shapes (S)</span>
+          </button>
+          <div id="shapeDropdown" class="dropdown-content">
+            <div class="dropdown-item" data-shape="line">
+              <i class="fas fa-minus"></i>
+              <span style="margin-left: 10px;">Line</span>
+            </div>
+            <div class="dropdown-item" data-shape="rect">
+              <i class="far fa-square"></i>
+              <span style="margin-left: 10px;">Rectangle</span>
+            </div>
+            <div class="dropdown-item" data-shape="circle">
+              <i class="far fa-circle"></i>
+              <span style="margin-left: 10px;">Circle</span>
+            </div>
+            <div class="dropdown-item" data-shape="triangle">
+              <i class="fas fa-play" style="transform: rotate(90deg);"></i>
+              <span style="margin-left: 10px;">Triangle</span>
+            </div>
+            <div class="dropdown-item" data-shape="arrow">
+              <i class="fas fa-long-arrow-alt-right"></i>
+              <span style="margin-left: 10px;">Arrow</span>
+            </div>
+          </div>
+        </div>
+        <button id="textTool" class="toolbar-btn" title="Text">
+          <i class="fas fa-font"></i>
+          <span class="tooltip">Text (T)</span>
+        </button>
+        <div class="dropdown">
+          <button id="stickyTool" class="toolbar-btn" title="Notes">
+            <i class="fas fa-sticky-note"></i>
+            <span class="tooltip">Sticky Note (N)</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="toolbar-section">
+        <div class="dropdown">
+          <button id="colorButton" class="toolbar-btn" title="Color">
+            <i class="fas fa-palette"></i>
+            <span class="tooltip">Color (C)</span>
+          </button>
+          <div id="colorDropdown" class="dropdown-content">
+            <div class="color-grid">
+              <div class="color-option active" style="background-color: #000000;" data-color="#000000"></div>
+              <div class="color-option" style="background-color: #ff0000;" data-color="#ff0000"></div>
+              <div class="color-option" style="background-color: #0000ff;" data-color="#0000ff"></div>
+              <div class="color-option" style="background-color: #00ff00;" data-color="#00ff00"></div>
+              <div class="color-option" style="background-color: #ffff00;" data-color="#ffff00"></div>
+              <div class="color-option" style="background-color: #ff00ff;" data-color="#ff00ff"></div>
+              <div class="color-option" style="background-color: #00ffff;" data-color="#00ffff"></div>
+              <div class="color-option" style="background-color: #ff9900;" data-color="#ff9900"></div>
+              <div class="color-option" style="background-color: #9900ff;" data-color="#9900ff"></div>
+              <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+            </div>
+            <div class="custom-color">
+              <label>Custom:</label>
+              <input type="color" id="customColorPicker" value="#000000">
+            </div>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button id="brushSizeButton" class="toolbar-btn" title="Brush Size">
+            <i class="fas fa-paint-brush"></i>
+            <span class="tooltip">Brush Size (B)</span>
+          </button>
+          <div id="brushSizeDropdown" class="dropdown-content">
+            <div class="brush-size">
+              <label>Thickness:</label>
+              <input type="range" min="1" max="50" value="5" class="range-slider" id="brushSize">
+              <span id="brushSizeValue" style="margin-left: 10px;">5px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="toolbar-section">
+        <button id="undoButton" class="toolbar-btn" title="Undo">
+          <i class="fas fa-undo"></i>
+          <span class="tooltip">Undo (Ctrl+Z)</span>
+        </button>
+        <button id="redoButton" class="toolbar-btn" title="Redo">
+          <i class="fas fa-redo"></i>
+          <span class="tooltip">Redo (Ctrl+Y)</span>
+        </button>
+      </div>
+      
+      <div class="toolbar-section">
+        <button id="panTool" class="toolbar-btn" title="Pan">
+          <i class="fas fa-hand-paper"></i>
+          <span class="tooltip">Pan (Space)</span>
+        </button>
+        <button id="zoomInButton" class="toolbar-btn" title="Zoom In">
+          <i class="fas fa-search-plus"></i>
+          <span class="tooltip">Zoom In (+)</span>
+        </button>
+        <button id="zoomOutButton" class="toolbar-btn" title="Zoom Out">
+          <i class="fas fa-search-minus"></i>
+          <span class="tooltip">Zoom Out (-)</span>
+        </button>
+        <button id="resetViewButton" class="toolbar-btn" title="Reset View">
+          <i class="fas fa-expand"></i>
+          <span class="tooltip">Reset View (R)</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="canvas-container">
+      <canvas id="whiteboard"></canvas>
+    </div>
+  </div>
+  
+  <div class="canvas-controls">
+    <button id="zoomIn" title="Zoom In">
+      <i class="fas fa-plus"></i>
+    </button>
+    <button id="zoomOut" title="Zoom Out">
+      <i class="fas fa-minus"></i>
+    </button>
+    <button id="resetZoom" title="Reset View">
+      <i class="fas fa-expand"></i>
+    </button>
+  </div>
+  
+  <div class="status-indicator">
+    <span id="toolStatus">Pen</span>
+    <span id="penPressureDisplay" style="margin-left: 10px;">
+      Pressure: <span id="pressureValue">N/A</span>
+      <span class="pen-pressure-indicator" id="pressureIndicator"></span>
+    </span>
+  </div>
+  
+  <button id="menuButton" class="menu-btn">
+    <i class="fas fa-ellipsis-h"></i>
+  </button>
+  
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Settings</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>Appearance</h3>
+        <div class="settings-option">
+          <label>Dark Mode</label>
+          <label class="switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <h3>Canvas</h3>
+        <div class="settings-option">
+          <label>Grid Background</label>
+          <label class="switch">
+            <input type="checkbox" id="gridToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="settings-option">
+          <label>Smooth Drawing</label>
+          <label class="switch">
+            <input type="checkbox" id="smoothDrawingToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <h3>Pen Pressure Sensitivity</h3>
+        <div class="settings-option">
+          <label>Enable Pressure Sensitivity (for supported devices)</label>
+          <label class="switch">
+            <input type="checkbox" id="pressureSensitivityToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        
+        <div class="settings-row">
+          <label>Pressure Intensity</label>
+          <input type="range" min="0" max="10" value="5" class="range-slider" id="pressureIntensity">
+          <span id="pressureIntensityValue" style="margin-left: 10px;">5</span>
+        </div>
+      </div>
+      <div class="buttons-row">
+        <button class="button button-secondary modal-close">Cancel</button>
+        <button class="button button-primary" id="saveSettings">Save Settings</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Main application class
+    class Whiteboard {
+      constructor() {
+        // Canvas setup
+        this.canvas = document.getElementById('whiteboard');
+        this.ctx = this.canvas.getContext('2d');
+        
+        // State variables
+        this.isDrawing = false;
+        this.lastX = 0;
+        this.lastY = 0;
+        this.brushSize = 5;
+        this.currentColor = '#000000';
+        this.currentTool = 'pen';
+        this.currentShape = 'rect';
+        this.drawingHistory = [];
+        this.historyIndex = -1;
+        this.maxHistoryLength = 50;
+        
+        // View transformation variables
+        this.scale = 1;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.isPanning = false;
+        this.startPanX = 0;
+        this.startPanY = 0;
+        
+        // Pressure sensitivity
+        this.pressureSensitivityEnabled = true;
+        this.pressureIntensity = 5;
+        this.lastPressure = 0;
+        
+        // App settings
+        this.darkMode = false;
+        this.gridEnabled = false;
+        this.smoothDrawing = true;
+        
+        // Text tool variables
+        this.isAddingText = false;
+        this.textInputElement = null;
+        
+        // Current shape drawing
+        this.shapeStartX = 0;
+        this.shapeStartY = 0;
+        this.shapeEndX = 0;
+        this.shapeEndY = 0;
+        this.isDrawingShape = false;
+        
+        // Temporary canvas for shape preview
+        this.tempCanvas = document.createElement('canvas');
+        this.tempCtx = this.tempCanvas.getContext('2d');
+        
+        // Initialize
+        this.init();
+      }
+      
+      init() {
+        // Set up the canvas size
+        this.resizeCanvas();
+        
+        // Save the initial state
+        this.saveState();
+        
+        // Event Listeners
+        this.attachEventListeners();
+        
+        // Initial drawing of the grid if enabled
+        if (this.gridEnabled) {
+          this.drawGrid();
+        }
+      }
+      
+      resizeCanvas() {
+        const container = document.querySelector('.canvas-container');
+        this.canvas.width = container.clientWidth;
+        this.canvas.height = container.clientHeight;
+        
+        this.tempCanvas.width = this.canvas.width;
+        this.tempCanvas.height = this.canvas.height;
+        
+        // Redraw the canvas after resize
+        this.redrawCanvas();
+      }
+      
+      attachEventListeners() {
+        // Window events
+        window.addEventListener('resize', () => this.resizeCanvas());
+        
+        // Mouse events for drawing
+        this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+        this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        this.canvas.addEventListener('mouseup', () => this.handleMouseUp());
+        this.canvas.addEventListener('mouseout', () => this.handleMouseUp());
+        
+        // Touch events for mobile
+        this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e));
+        this.canvas.addEventListener('touchmove', (e) => this.handleTouchMove(e));
+        this.canvas.addEventListener('touchend', () => this.handleTouchEnd());
+        
+        // Pointer events for pen/stylus
+        this.canvas.addEventListener('pointerdown', (e) => this.handlePointerDown(e));
+        this.canvas.addEventListener('pointermove', (e) => this.handlePointerMove(e));
+        this.canvas.addEventListener('pointerup', () => this.handlePointerUp());
+        this.canvas.addEventListener('pointerout', () => this.handlePointerUp());
+        
+        // Prevent context menu on right-click
+        this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // Wheel event for zooming
+        this.canvas.addEventListener('wheel', (e) => this.handleWheel(e));
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => this.handleKeyDown(e));
+        
+        // Setup toolbar button click handlers
+        this.setupToolbarButtons();
+        
+        // Setup modal handlers
+        this.setupModals();
+      }
+      
+      setupToolbarButtons() {
+        // Drawing Tools
+        document.getElementById('penTool').addEventListener('click', () => this.setTool('pen'));
+        document.getElementById('highlighterTool').addEventListener('click', () => this.setTool('highlighter'));
+        document.getElementById('eraserTool').addEventListener('click', () => this.setTool('eraser'));
+        document.getElementById('textTool').addEventListener('click', () => this.setTool('text'));
+        document.getElementById('shapeTool').addEventListener('click', () => this.toggleDropdown('shapeDropdown'));
+        
+        // Shape selection
+        const shapeItems = document.querySelectorAll('#shapeDropdown .dropdown-item');
+        shapeItems.forEach(item => {
+          item.addEventListener('click', () => {
+            this.currentShape = item.dataset.shape;
+            this.setTool('shape');
+            this.toggleDropdown('shapeDropdown', false);
+          });
+        });
+        
+        // Color picker
+        document.getElementById('colorButton').addEventListener('click', () => this.toggleDropdown('colorDropdown'));
+        
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+          option.addEventListener('click', () => {
+            this.setColor(option.dataset.color);
+            document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+            option.classList.add('active');
+            this.toggleDropdown('colorDropdown', false);
+          });
+        });
+        
+        document.getElementById('customColorPicker').addEventListener('input', (e) => {
+          this.setColor(e.target.value);
+          document.querySelectorAll('.color-option').forEach(o => o.classList.remove('active'));
+        });
+        
+        // Brush size
+        document.getElementById('brushSizeButton').addEventListener('click', () => this.toggleDropdown('brushSizeDropdown'));
+        
+        const brushSizeSlider = document.getElementById('brushSize');
+        brushSizeSlider.addEventListener('input', (e) => {
+          this.brushSize = parseInt(e.target.value);
+          document.getElementById('brushSizeValue').textContent = `${this.brushSize}px`;
+        });
+        
+        // History controls
+        document.getElementById('undoButton').addEventListener('click', () => this.undo());
+        document.getElementById('redoButton').addEventListener('click', () => this.redo());
+        
+        // Canvas navigation
+        document.getElementById('panTool').addEventListener('click', () => this.setTool('pan'));
+        document.getElementById('zoomInButton').addEventListener('click', () => this.zoomIn());
+        document.getElementById('zoomOutButton').addEventListener('click', () => this.zoomOut());
+        document.getElementById('resetViewButton').addEventListener('click', () => this.resetView());
+        
+        // Canvas action buttons
+        document.getElementById('clearButton').addEventListener('click', () => this.clearCanvas());
+        document.getElementById('saveButton').addEventListener('click', () => this.saveCanvas());
+        document.getElementById('settingsButton').addEventListener('click', () => this.openSettings());
+        
+        // Canvas controls (bottom right)
+        document.getElementById('zoomIn').addEventListener('click', () => this.zoomIn());
+        document.getElementById('zoomOut').addEventListener('click', () => this.zoomOut());
+        document.getElementById('resetZoom').addEventListener('click', () => this.resetView());
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+              dropdown.classList.remove('show');
+            });
+          }
+        });
+      }
+      
+      setupModals() {
+        // Settings modal
+        document.getElementById('settingsButton').addEventListener('click', () => {
+          document.getElementById('settingsModal').style.display = 'flex';
+          
+          // Set current values
+          document.getElementById('darkModeToggle').checked = this.darkMode;
+          document.getElementById('gridToggle').checked = this.gridEnabled;
+          document.getElementById('smoothDrawingToggle').checked = this.smoothDrawing;
+          document.getElementById('pressureSensitivityToggle').checked = this.pressureSensitivityEnabled;
+          document.getElementById('pressureIntensity').value = this.pressureIntensity;
+          document.getElementById('pressureIntensityValue').textContent = this.pressureIntensity;
+        });
+        
+        // Close modal buttons
+        document.querySelectorAll('.modal-close').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('settingsModal').style.display = 'none';
+          });
+        });
+        
+        // Save settings
+        document.getElementById('saveSettings').addEventListener('click', () => {
+          this.darkMode = document.getElementById('darkModeToggle').checked;
+          this.gridEnabled = document.getElementById('gridToggle').checked;
+          this.smoothDrawing = document.getElementById('smoothDrawingToggle').checked;
+          this.pressureSensitivityEnabled = document.getElementById('pressureSensitivityToggle').checked;
+          this.pressureIntensity = parseInt(document.getElementById('pressureIntensity').value);
+          
+          // Apply dark mode
+          if (this.darkMode) {
+            document.body.classList.add('dark-mode');
+          } else {
+            document.body.classList.remove('dark-mode');
+          }
+          
+          // Redraw grid if needed
+          this.redrawCanvas();
+          
+          // Close modal
+          document.getElementById('settingsModal').style.display = 'none';
+        });
+        
+        // Pressure intensity slider
+        document.getElementById('pressureIntensity').addEventListener('input', (e) => {
+          document.getElementById('pressureIntensityValue').textContent = e.target.value;
+        });
+      }
+      
+      // Tool management
+      setTool(tool) {
+        this.currentTool = tool;
+        
+        // Update toolbar UI
+        document.querySelectorAll('.main-toolbar .toolbar-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        
+        // Update the status indicator
+        document.getElementById('toolStatus').textContent = tool.charAt(0).toUpperCase() + tool.slice(1);
+        
+        // Activate the appropriate button
+        switch (tool) {
+          case 'pen':
+            document.getElementById('penTool').classList.add('active');
+            this.canvas.style.cursor = 'crosshair';
+            break;
+          case 'highlighter':
+            document.getElementById('highlighterTool').classList.add('active');
+            this.canvas.style.cursor = 'crosshair';
+            break;
+          case 'eraser':
+            document.getElementById('eraserTool').classList.add('active');
+            this.canvas.style.cursor = 'crosshair';
+            break;
+          case 'text':
+            document.getElementById('textTool').classList.add('active');
+            this.canvas.style.cursor = 'text';
+            break;
+          case 'shape':
+            document.getElementById('shapeTool').classList.add('active');
+            this.canvas.style.cursor = 'crosshair';
+            break;
+          case 'pan':
+            document.getElementById('panTool').classList.add('active');
+            this.canvas.style.cursor = 'grab';
+            break;
+          default:
+            this.canvas.style.cursor = 'default';
+        }
+      }
+      
+      setColor(color) {
+        this.currentColor = color;
+      }
+      
+      // UI helpers
+      toggleDropdown(dropdownId, show = undefined) {
+        const dropdown = document.getElementById(dropdownId);
+        
+        // Close all other dropdowns first
+        document.querySelectorAll('.dropdown-content').forEach(el => {
+          if (el.id !== dropdownId) {
+            el.classList.remove('show');
+          }
+        });
+        
+        // Toggle or set the specified dropdown
+        if (show === undefined) {
+          dropdown.classList.toggle('show');
+        } else {
+          if (show) {
+            dropdown.classList.add('show');
+          } else {
+            dropdown.classList.remove('show');
+          }
+        }
+      }
+      
+      // Mouse event handlers
+      handleMouseDown(e) {
+        if (this.currentTool === 'pan') {
+          this.startPanning(e.clientX, e.clientY);
+          return;
+        }
+        
+        const pos = this.getCanvasCoordinates(e.clientX, e.clientY);
+        
+        if (this.currentTool === 'text') {
+          this.startTextInput(pos.x, pos.y);
+          return;
+        }
+        
+        if (this.currentTool === 'shape') {
+          this.startShapeDrawing(pos.x, pos.y);
+          return;
+        }
+        
+        this.isDrawing = true;
+        this.lastX = pos.x;
+        this.lastY = pos.y;
+        
+        // Start a new path for freehand drawing
+        if (['pen', 'highlighter', 'eraser'].includes(this.currentTool)) {
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.lastX, this.lastY);
+          
+          // Draw a single dot if the user just clicks
+          this.ctx.lineCap = 'round';
+          this.ctx.lineJoin = 'round';
+          
+          if (this.currentTool === 'highlighter') {
+            this.ctx.globalAlpha = 0.3;
+          } else {
+            this.ctx.globalAlpha = 1.0;
+          }
+          
+          if (this.currentTool === 'eraser') {
+            this.ctx.strokeStyle = this.darkMode ? '#1a1a1a' : '#ffffff';
+            this.ctx.lineWidth = this.brushSize * 2;
+            this.ctx.globalCompositeOperation = 'destination-out';
+          } else {
+            this.ctx.strokeStyle = this.currentColor;
+            this.ctx.lineWidth = this.brushSize;
+            this.ctx.globalCompositeOperation = 'source-over';
+          }
+          
+          this.ctx.arc(this.lastX, this.lastY, this.brushSize / 2, 0, Math.PI * 2);
+          this.ctx.fill();
+        }
+      }
+      
+      handleMouseMove(e) {
+        if (!this.isDrawing && !this.isPanning && !this.isDrawingShape) return;
+        
+        const pos = this.getCanvasCoordinates(e.clientX, e.clientY);
+        
+        if (this.isPanning) {
+          this.updatePanning(e.clientX, e.clientY);
+          return;
+        }
+        
+        if (this.isDrawingShape) {
+          this.updateShapeDrawing(pos.x, pos.y);
+          return;
+        }
+        
+        if (['pen', 'highlighter', 'eraser'].includes(this.currentTool)) {
+          this.drawLine(this.lastX, this.lastY, pos.x, pos.y, e.pressure || 1);
+          this.lastX = pos.x;
+          this.lastY = pos.y;
+        }
+      }
+      
+      handleMouseUp() {
+        if (this.isPanning) {
+          this.stopPanning();
+          return;
+        }
+        
+        if (this.isDrawingShape) {
+          this.finishShapeDrawing();
+          return;
+        }
+        
+        if (this.isDrawing) {
+          this.isDrawing = false;
+          // Reset composite operation
+          this.ctx.globalCompositeOperation = 'source-over';
+          this.ctx.globalAlpha = 1.0;
+          
+          // Save state for undo/redo
+          this.saveState();
+        }
+      }
+      
+      // Touch event handlers
+      handleTouchStart(e) {
+        e.preventDefault(); // Prevent scrolling
+        
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          this.handleMouseDown({
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            pressure: touch.force || 1
+          });
+        } else if (e.touches.length === 2) {
+          // Two-finger gesture - prepare for pinch zoom
+          this.initPinchZoom(e.touches);
+        }
+      }
+      
+      handleTouchMove(e) {
+        e.preventDefault();
+        
+        if (e.touches.length === 1) {
+          const touch = e.touches[0];
+          this.handleMouseMove({
+            clientX: touch.clientX,
+            clientY: touch.clientY,
+            pressure: touch.force || 1
+          });
+        } else if (e.touches.length === 2) {
+          // Handle pinch zoom
+          this.handlePinchZoom(e.touches);
+        }
+      }
+      
+      handleTouchEnd(e) {
+        this.handleMouseUp();
+        this.isPinching = false;
+      }
+      
+      // Pointer events (for pen/stylus)
+      handlePointerDown(e) {
+        // Only process pen or touch events here, mouse events are handled separately
+        if (e.pointerType === 'pen' || e.pointerType === 'touch') {
+          this.updatePressureIndicator(e.pressure || 0);
+          
+          const pos = this.getCanvasCoordinates(e.clientX, e.clientY);
+          
+          if (this.currentTool === 'pan') {
+            this.startPanning(e.clientX, e.clientY);
+            return;
+          }
+          
+          if (this.currentTool === 'text') {
+            this.startTextInput(pos.x, pos.y);
+            return;
+          }
+          
+          if (this.currentTool === 'shape') {
+            this.startShapeDrawing(pos.x, pos.y);
+            return;
+          }
+          
+          this.isDrawing = true;
+          this.lastX = pos.x;
+          this.lastY = pos.y;
+          this.lastPressure = this.pressureSensitivityEnabled ? e.pressure || 1 : 1;
+          
+          // Start a new path for freehand drawing
+          if (['pen', 'highlighter', 'eraser'].includes(this.currentTool)) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.lastX, this.lastY);
+            
+            this.ctx.lineCap = 'round';
+            this.ctx.lineJoin = 'round';
+            
+            if (this.currentTool === 'highlighter') {
+              this.ctx.globalAlpha = 0.3;
+            } else {
+              this.ctx.globalAlpha = 1.0;
+            }
+            
+            if (this.currentTool === 'eraser') {
+              this.ctx.strokeStyle = this.darkMode ? '#1a1a1a' : '#ffffff';
+              this.ctx.globalCompositeOperation = 'destination-out';
+            } else {
+              this.ctx.strokeStyle = this.currentColor;
+              this.ctx.globalCompositeOperation = 'source-over';
+            }
+            
+            // Adjust line width based on pressure
+            const pressureSize = this.pressureSensitivityEnabled 
+              ? this.brushSize * Math.max(0.1, e.pressure * (this.pressureIntensity / 5)) 
+              : this.brushSize;
+            
+            this.ctx.lineWidth = pressureSize;
+            this.ctx.arc(this.lastX, this.lastY, pressureSize / 2, 0, Math.PI * 2);
+            this.ctx.fill();
+          }
+        }
+      }
+      
+      handlePointerMove(e) {
+        if (e.pointerType === 'pen' || e.pointerType === 'touch') {
+          this.updatePressureIndicator(e.pressure || 0);
+          
+          if (!this.isDrawing && !this.isPanning && !this.isDrawingShape) return;
+          
+          const pos = this.getCanvasCoordinates(e.clientX, e.clientY);
+          
+          if (this.isPanning) {
+            this.updatePanning(e.clientX, e.clientY);
+            return;
+          }
+          
+          if (this.isDrawingShape) {
+            this.updateShapeDrawing(pos.x, pos.y);
+            return;
+          }
+          
+          if (['pen', 'highlighter', 'eraser'].includes(this.currentTool)) {
+            const pressure = this.pressureSensitivityEnabled ? e.pressure || 1 : 1;
+            this.drawLine(this.lastX, this.lastY, pos.x, pos.y, pressure);
+            this.lastX = pos.x;
+            this.lastY = pos.y;
+            this.lastPressure = pressure;
+          }
+        }
+      }
+      
+      handlePointerUp(e) {
+        if (e && (e.pointerType === 'pen' || e.pointerType === 'touch')) {
+          this.updatePressureIndicator(0); // Reset pressure indicator
+        }
+        this.handleMouseUp();
+      }
+      
+      // Pressure indicator update
+      updatePressureIndicator(pressure) {
+        const pressureValue = document.getElementById('pressureValue');
+        const pressureIndicator = document.getElementById('pressureIndicator');
+        
+        if (pressure > 0) {
+          pressureValue.textContent = pressure.toFixed(2);
+          
+          // Change indicator size based on pressure
+          const size = 20 + (pressure * 10);
+          pressureIndicator.style.width = `${size}px`;
+          pressureIndicator.style.height = `${size}px`;
+          
+          // Change color intensity based on pressure
+          const color = this.hexToRgb(this.currentColor);
+          if (color) {
+            pressureIndicator.style.backgroundColor = `rgba(${color.r}, ${color.g}, ${color.b}, ${pressure})`;
+          } else {
+            pressureIndicator.style.backgroundColor = this.currentColor;
+          }
+        } else {
+          pressureValue.textContent = 'N/A';
+          pressureIndicator.style.width = '20px';
+          pressureIndicator.style.height = '20px';
+          pressureIndicator.style.backgroundColor = 'transparent';
+        }
+      }
+      
+      // Keyboard shortcut handler
+      handleKeyDown(e) {
+        // Ignore keyboard shortcuts when focused on input elements
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          return;
+        }
+        
+        // Undo/Redo
+        if (e.ctrlKey && e.key === 'z') {
+          e.preventDefault();
+          this.undo();
+        } else if ((e.ctrlKey && e.key === 'y') || (e.ctrlKey && e.shiftKey && e.key === 'z')) {
+          e.preventDefault();
+          this.redo();
+        }
+        
+        // Tool shortcuts
+        switch (e.key.toLowerCase()) {
+          case 'p':
+            this.setTool('pen');
+            break;
+          case 'h':
+            this.setTool('highlighter');
+            break;
+          case 'e':
+            this.setTool('eraser');
+            break;
+          case 't':
+            this.setTool('text');
+            break;
+          case 's':
+            this.setTool('shape');
+            break;
+          case 'c':
+            this.toggleDropdown('colorDropdown');
+            break;
+          case 'b':
+            this.toggleDropdown('brushSizeDropdown');
+            break;
+          case ' ': // Space key for panning
+            if (this.currentTool !== 'pan') {
+              this.previousTool = this.currentTool;
+              this.setTool('pan');
+              e.preventDefault(); // Prevent page scrolling
+            }
+            break;
+          case '=':
+          case '+':
+            this.zoomIn();
+            e.preventDefault();
+            break;
+          case '-':
+          case '_':
+            this.zoomOut();
+            e.preventDefault();
+            break;
+          case 'r':
+            this.resetView();
+            break;
+        }
+      }
+      
+      // Drawing methods
+      drawLine(fromX, fromY, toX, toY, pressure = 1) {
+        this.ctx.beginPath();
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        
+        if (this.currentTool === 'highlighter') {
+          this.ctx.globalAlpha = 0.3;
+        } else {
+          this.ctx.globalAlpha = 1.0;
+        }
+        
+        if (this.currentTool === 'eraser') {
+          this.ctx.strokeStyle = this.darkMode ? '#1a1a1a' : '#ffffff';
+          this.ctx.globalCompositeOperation = 'destination-out';
+        } else {
+          this.ctx.strokeStyle = this.currentColor;
+          this.ctx.globalCompositeOperation = 'source-over';
+        }
+        
+        // Adjust line width based on pressure
+        const pressureSize = this.pressureSensitivityEnabled 
+          ? this.brushSize * Math.max(0.1, pressure * (this.pressureIntensity / 5)) 
+          : this.brushSize;
+        
+        this.ctx.lineWidth = pressureSize;
+        
+        if (this.smoothDrawing && this.lastPressure !== 0) {
+          // For smooth transition, calculate intermediate points and pressure
+          const steps = 5; // More steps = smoother line but more CPU intensive
+          const pressureDiff = pressure - this.lastPressure;
+          
+          for (let i = 0; i <= steps; i++) {
+            const t = i / steps;
+            const x = fromX + (toX - fromX) * t;
+            const y = fromY + (toY - fromY) * t;
+            const stepPressure = this.lastPressure + pressureDiff * t;
+            
+            // Adjust size for intermediate points
+            const stepSize = this.pressureSensitivityEnabled 
+              ? this.brushSize * Math.max(0.1, stepPressure * (this.pressureIntensity / 5)) 
+              : this.brushSize;
+            
+            this.ctx.lineWidth = stepSize;
+            
+            if (i === 0) {
+              this.ctx.moveTo(x, y);
+            } else {
+              this.ctx.lineTo(x, y);
+            }
+          }
+        } else {
+          this.ctx.moveTo(fromX, fromY);
+          this.ctx.lineTo(toX, toY);
+        }
+        
+        this.ctx.stroke();
+      }
+      
+      // Text input handling
+      startTextInput(x, y) {
+        // Remove any existing text input
+        if (this.textInputElement) {
+          this.finalizeTextInput();
+        }
+        
+        this.isAddingText = true;
+        
+        // Create text input element
+        const input = document.createElement('textarea');
+        input.style.position = 'absolute';
+        input.style.left = `${x * this.scale + this.offsetX}px`;
+        input.style.top = `${y * this.scale + this.offsetY}px`;
+        input.style.color = this.currentColor;
+        input.style.backgroundColor = 'transparent';
+        input.style.border = '1px dashed ' + this.currentColor;
+        input.style.fontSize = `${this.brushSize * 3}px`;
+        input.style.fontFamily = 'Arial, sans-serif';
+        input.style.overflow = 'hidden';
+        input.style.resize = 'none';
+        input.style.outline = 'none';
+        input.style.minWidth = '100px';
+        input.style.minHeight = '50px';
+        input.style.zIndex = '1000';
+        input.style.transform = `scale(${1 / this.scale})`;
+        input.style.transformOrigin = 'top left';
+        
+        document.querySelector('.canvas-container').appendChild(input);
+        this.textInputElement = input;
+        
+        // Focus the input
+        setTimeout(() => {
+          input.focus();
+        }, 10);
+        
+        // Handle blur and key events
+        input.addEventListener('blur', () => this.finalizeTextInput());
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            input.remove();
+            this.textInputElement = null;
+            this.isAddingText = false;
+          } else if (e.key === 'Enter' && e.shiftKey === false) {
+            e.preventDefault();
+            this.finalizeTextInput();
+          }
+        });
+      }
+      
+      finalizeTextInput() {
+        if (!this.textInputElement) return;
+        
+        const text = this.textInputElement.value.trim();
+        if (text) {
+          // Get position and restore to canvas coordinates
+          const rect = this.textInputElement.getBoundingClientRect();
+          const containerRect = document.querySelector('.canvas-container').getBoundingClientRect();
+          
+          const x = (rect.left - containerRect.left - this.offsetX) / this.scale;
+          const y = (rect.top - containerRect.top - this.offsetY) / this.scale;
+          
+          // Draw text onto canvas
+          this.ctx.font = `${this.brushSize * 3}px Arial, sans-serif`;
+          this.ctx.fillStyle = this.currentColor;
+          this.ctx.textBaseline = 'top';
+          
+          // Handle multiline text
+          const lines = text.split('\n');
+          const lineHeight = this.brushSize * 3 * 1.2;
+          
+          lines.forEach((line, index) => {
+            this.ctx.fillText(line, x, y + (index * lineHeight));
+          });
+          
+          this.saveState();
+        }
+        
+        // Remove the text input
+        this.textInputElement.remove();
+        this.textInputElement = null;
+        this.isAddingText = false;
+      }
+      
+      // Shape drawing handlers
+      startShapeDrawing(x, y) {
+        this.isDrawingShape = true;
+        this.shapeStartX = x;
+        this.shapeStartY = y;
+        this.shapeEndX = x;
+        this.shapeEndY = y;
+      }
+      
+      updateShapeDrawing(x, y) {
+        this.shapeEndX = x;
+        this.shapeEndY = y;
+        
+        // Clear temp canvas
+        this.tempCtx.clearRect(0, 0, this.tempCanvas.width, this.tempCanvas.height);
+        
+        // Set drawing style
+        this.tempCtx.strokeStyle = this.currentColor;
+        this.tempCtx.fillStyle = this.currentColor;
+        this.tempCtx.lineWidth = this.brushSize;
+        this.tempCtx.lineCap = 'round';
+        this.tempCtx.lineJoin = 'round';
+        
+        // Draw preview on temporary canvas
+        this.tempCtx.beginPath();
+        
+        switch (this.currentShape) {
+          case 'line':
+            this.tempCtx.moveTo(this.shapeStartX, this.shapeStartY);
+            this.tempCtx.lineTo(this.shapeEndX, this.shapeEndY);
+            this.tempCtx.stroke();
+            break;
+          case 'rect':
+            this.drawRect(this.tempCtx, this.shapeStartX, this.shapeStartY, this.shapeEndX - this.shapeStartX, this.shapeEndY - this.shapeStartY);
+            break;
+          case 'circle':
+            this.drawCircle(this.tempCtx, this.shapeStartX, this.shapeStartY, this.shapeEndX, this.shapeEndY);
+            break;
+          case 'triangle':
+            this.drawTriangle(this.tempCtx, this.shapeStartX, this.shapeStartY, this.shapeEndX, this.shapeEndY);
+            break;
+          case 'arrow':
+            this.drawArrow(this.tempCtx, this.shapeStartX, this.shapeStartY, this.shapeEndX, this.shapeEndY);
+            break;
+        }
+        
+        // Draw temp canvas over main canvas
+        this.redrawCanvas();
+        this.ctx.drawImage(this.tempCanvas, 0, 0);
+      }
+      
+      finishShapeDrawing() {
+        if (!this.isDrawingShape) return;
+        
+        // Draw final shape directly onto the main canvas
+        this.ctx.strokeStyle = this.currentColor;
+        this.ctx.fillStyle = this.currentColor;
+        this.ctx.lineWidth = this.brushSize;
+        this.ctx.lineCap = 'round';
+        this.ctx.lineJoin = 'round';
+        
+        this.ctx.beginPath();
+        
+        switch (this.currentShape) {
+          case 'line':
+            this.ctx.moveTo(this.shapeStartX, this.shapeStartY);
+            this.ctx.lineTo(this.shapeEndX, this.shapeEndY);
+            this.ctx.stroke();
+            break;
+          case 'rect':
+            this.drawRect(this.ctx, this.shapeStartX, this.shapeStartY, this.shapeEndX - this.shapeStartX, this.shapeEndY - this.shapeStartY);
+            break;
+          case 'circle':
+            this.drawCircle(this.ctx, this.shapeStartX, this.shapeStartY, this.shapeEndX, this.shapeEndY);
+            break;
+          case 'triangle':
+            this.drawTriangle(this.ctx, this.shapeStartX, this.shapeStartY, this.shapeEndX, this.shapeEndY);
+            break;
+          case 'arrow':
+            this.drawArrow(this.ctx, this.shapeStartX, this.shapeStartY, this.shapeEndX, this.shapeEndY);
+            break;
+        }
+        
+        this.isDrawingShape = false;
+        this.saveState();
+      }
+      
+      // Shape drawing helpers
+      drawRect(context, x, y, width, height) {
+        context.strokeRect(x, y, width, height);
+      }
+      
+      drawCircle(context, startX, startY, endX, endY) {
+        const centerX = (startX + endX) / 2;
+        const centerY = (startY + endY) / 2;
+        const radiusX = Math.abs(endX - startX) / 2;
+        const radiusY = Math.abs(endY - startY) / 2;
+        
+        // For simplicity, we'll use an average radius for a circle
+        const radius = Math.max(radiusX, radiusY);
+        
+        context.beginPath();
+        context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        context.stroke();
+      }
+      
+      drawTriangle(context, startX, startY, endX, endY) {
+        const width = endX - startX;
+        const height = endY - startY;
+        
+        context.beginPath();
+        context.moveTo(startX + width / 2, startY); // Top point
+        context.lineTo(startX, startY + height); // Bottom left
+        context.lineTo(startX + width, startY + height); // Bottom right
+        context.closePath();
+        context.stroke();
+      }
+      
+      drawArrow(context, fromX, fromY, toX, toY) {
+        const headLength = 15; // Length of the arrow head
+        const angle = Math.atan2(toY - fromY, toX - fromX);
+        
+        // Draw the line
+        context.beginPath();
+        context.moveTo(fromX, fromY);
+        context.lineTo(toX, toY);
+        context.stroke();
+        
+        // Draw the arrow head
+        context.beginPath();
+        context.moveTo(toX, toY);
+        context.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
+        context.moveTo(toX, toY);
+        context.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
+        context.stroke();
+      }
+      
+      // Pan and zoom functions
+      startPanning(x, y) {
+        this.isPanning = true;
+        this.startPanX = x;
+        this.startPanY = y;
+        this.canvas.style.cursor = 'grabbing';
+      }
+      
+      updatePanning(x, y) {
+        const dx = x - this.startPanX;
+        const dy = y - this.startPanY;
+        
+        this.offsetX += dx;
+        this.offsetY += dy;
+        
+        this.startPanX = x;
+        this.startPanY = y;
+        
+        this.redrawCanvas();
+      }
+      
+      stopPanning() {
+        this.isPanning = false;
+        if (this.currentTool === 'pan') {
+          this.canvas.style.cursor = 'grab';
+        } else {
+          this.canvas.style.cursor = 'crosshair';
+        }
+      }
+      
+      handleWheel(e) {
+        e.preventDefault();
+        
+        const rect = this.canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        
+        // Normalize wheel delta
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        
+        // Calculate zoom around mouse position
+        this.zoomAtPoint(delta, mouseX, mouseY);
+      }
+      
+      zoomAtPoint(delta, x, y) {
+        const oldScale = this.scale;
+        this.scale = Math.min(Math.max(0.1, this.scale + delta), 5);
+        
+        // Adjust offset to zoom around point
+        if (oldScale !== this.scale) {
+          const factor = this.scale / oldScale;
+          
+          // Calculate zoom center in canvas space
+          const canvasX = (x - this.offsetX) / oldScale;
+          const canvasY = (y - this.offsetY) / oldScale;
+          
+          // Adjust offset so that canvasX,canvasY remains under the mouse
+          this.offsetX = x - canvasX * this.scale;
+          this.offsetY = y - canvasY * this.scale;
+          
+          this.redrawCanvas();
+        }
+      }
+      
+      zoomIn() {
+        const center = {
+          x: this.canvas.width / 2,
+          y: this.canvas.height / 2
+        };
+        this.zoomAtPoint(0.1, center.x, center.y);
+      }
+      
+      zoomOut() {
+        const center = {
+          x: this.canvas.width / 2,
+          y: this.canvas.height / 2
+        };
+        this.zoomAtPoint(-0.1, center.x, center.y);
+      }
+      
+      resetView() {
+        this.scale = 1;
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.redrawCanvas();
+      }
+      
+      // Canvas state management
+      redrawCanvas() {
+        // Clear the canvas
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Apply transformations
+        this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+        
+        // Draw grid if enabled
+        if (this.gridEnabled) {
+          this.drawGrid();
+        }
+        
+        // Redraw the canvas content from the current state
+        if (this.historyIndex >= 0 && this.historyIndex < this.drawingHistory.length) {
+          const img = new Image();
+          img.src = this.drawingHistory[this.historyIndex];
+          img.onload = () => {
+            this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+            this.ctx.drawImage(img, 0, 0);
+          };
+        }
+      }
+      
+      drawGrid() {
+        const gridSize = 20;
+        const gridColor = this.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        
+        // Save current drawing state
+        this.ctx.save();
+        
+        // Reset transformation to draw in screen space
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        
+        this.ctx.beginPath();
+        this.ctx.strokeStyle = gridColor;
+        this.ctx.lineWidth = 1;
+        
+        // Calculate grid bounds based on the viewport
+        const startX = (this.offsetX % (gridSize * this.scale));
+        const startY = (this.offsetY % (gridSize * this.scale));
+        
+        // Draw vertical lines
+        for (let x = startX; x < this.canvas.width; x += gridSize * this.scale) {
+          this.ctx.moveTo(x, 0);
+          this.ctx.lineTo(x, this.canvas.height);
+        }
+        
+        // Draw horizontal lines
+        for (let y = startY; y < this.canvas.height; y += gridSize * this.scale) {
+          this.ctx.moveTo(0, y);
+          this.ctx.lineTo(this.canvas.width, y);
+        }
+        
+        this.ctx.stroke();
+        
+        // Restore drawing state
+        this.ctx.restore();
+      }
+      
+      saveState() {
+        // Save current canvas state for undo/redo
+        if (this.historyIndex < this.drawingHistory.length - 1) {
+          // If we're not at the end of the history, remove all states after current
+          this.drawingHistory = this.drawingHistory.slice(0, this.historyIndex + 1);
+        }
+        
+        // Add current state to history
+        this.drawingHistory.push(this.canvas.toDataURL());
+        
+        // Limit history size
+        if (this.drawingHistory.length > this.maxHistoryLength) {
+          this.drawingHistory.shift();
+        } else {
+          this.historyIndex++;
+        }
+      }
+      
+      undo() {
+        if (this.historyIndex > 0) {
+          this.historyIndex--;
+          this.redrawCanvas();
+        }
+      }
+      
+      redo() {
+        if (this.historyIndex < this.drawingHistory.length - 1) {
+          this.historyIndex++;
+          this.redrawCanvas();
+        }
+      }
+      
+      clearCanvas() {
+        if (confirm('Are you sure you want to clear the canvas?')) {
+          this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+          
+          if (this.gridEnabled) {
+            this.drawGrid();
+          }
+          
+          this.saveState();
+        }
+      }
+      
+      saveCanvas() {
+        // Temporarily remove transformation to capture the whole canvas
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        
+        // Create a temporary canvas with just the drawing
+        const tempSaveCanvas = document.createElement('canvas');
+        tempSaveCanvas.width = this.canvas.width;
+        tempSaveCanvas.height = this.canvas.height;
+        const tempCtx = tempSaveCanvas.getContext('2d');
+        
+        // Draw the current state to the temp canvas
+        if (this.historyIndex >= 0) {
+          const img = new Image();
+          img.src = this.drawingHistory[this.historyIndex];
+          
+          img.onload = () => {
+            tempCtx.drawImage(img, 0, 0);
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'whiteboard-' + new Date().toISOString().slice(0, 10) + '.png';
+            link.href = tempSaveCanvas.toDataURL('image/png');
+            link.click();
+            
+            // Restore transformation
+            this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
+          };
+        }
+      }
+      
+      openSettings() {
+        document.getElementById('settingsModal').style.display = 'flex';
+      }
+      
+      // Helper functions
+      getCanvasCoordinates(clientX, clientY) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = (clientX - rect.left - this.offsetX) / this.scale;
+        const y = (clientY - rect.top - this.offsetY) / this.scale;
+        return { x, y };
+      }
+      
+      hexToRgb(hex) {
+        // Parse hex color to rgb
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : null;
+      }
+    }
+    
+    // Initialize the whiteboard when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      const whiteboard = new Whiteboard();
+      
+      // Check for dark mode preference
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        whiteboard.darkMode = true;
+        document.body.classList.add('dark-mode');
+      }
+    });
+  </script>
+</body>
+</html>

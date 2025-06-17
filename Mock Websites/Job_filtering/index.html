@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Career Fair</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background-color: #ffffff;
+      color: #333333;
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    body.transition-effect {
+      opacity: 0;
+      transform: scale(1.5);
+    }
+
+    #company-name {
+      position: absolute;
+      top: calc(50% - 100px);
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      font-weight: bold;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(90deg, cyan, #a78bfa , cyan);
+      background-size: 400% 100%;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: ytdc 7s linear infinite;
+      z-index: 1000;
+    }
+
+    @keyframes ytdc {
+      0% {
+        background-position: 0%;
+      }
+      100% {
+        background-position: -400%;
+      }
+    }
+
+    #search-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 1000;
+    }
+
+    #search-bar {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, #00bcd4, #0097a7);
+      padding: 15px 25px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+      width: 400px;
+    }
+
+    #search-input {
+      border: none;
+      outline: none;
+      font-size: 18px;
+      padding: 10px 15px;
+      width: 100%;
+      border-radius: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #333333;
+    }
+
+    #search-button {
+      background-color: #00bcd4;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    #search-button:hover {
+      background-color: #0097a7;
+    }
+
+    #search-text {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #333333;
+      background: linear-gradient(90deg, #00bcd4, #0097a7, #00bcd4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: ytdc 7s linear infinite;
+    }
+
+    #grid-container {
+      display: flex;
+      justify-content: space-between;
+      height: 100vh;
+      overflow: hidden;
+      gap: 20px;
+      padding: 20px;
+      z-index: 1;
+    }
+
+    .column {
+      width: calc((100% - 100px) / 6);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-div {
+      width: 100%;
+      height: 33.33%;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      position: absolute;
+      color: #333333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 2px solid #00bcd4;
+      box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
+    }
+
+    .scroll-div figure {
+      margin: 0;
+    }
+
+    .scroll-div h2 {
+      margin: 10px 0;
+      font-size: 20px;
+      color: #00bcd4;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .scroll-div p {
+      margin: 0;
+      font-size: 14px;
+      color: #333333;
+    }
+
+    .scroll-div .buttons {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .scroll-div .buttons a {
+      padding: 12px 24px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #00bcd4;
+      color: #ffffff;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .scroll-div .buttons a:hover {
+      background-color: #0097a7;
+    }
+
+    #cv-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 600px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+      z-index: 2000;
+    }
+
+    #cv-modal h2 {
+      margin: 0 0 20px;
+      font-size: 24px;
+      color: #00bcd4;
+      font-family: 'Inter', sans-serif;
+    }
+
+    #cv-modal p {
+      margin: 0;
+      font-size: 16px;
+      color: #333333;
+    }
+
+    #cv-modal button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 20px;
+      background-color: #00bcd4;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #cv-modal button:hover {
+      background-color: #0097a7;
+    }
+
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    @keyframes scrollDown {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100vh); }
+    }
+
+    @keyframes scrollUp {
+      0% { transform: translateY(100vh); }
+      100% { transform: translateY(-100%); }
+    }
+
+    @media (max-width: 768px) {
+      #grid-container { gap: 10px; }
+      .column { width: calc((100% - 40px) / 3); }
+      #company-name { font-size: 36px; top: calc(50% - 80px); }
+      #search-bar { width: 300px; }
+      #search-input { font-size: 16px; }
+      #search-button { font-size: 14px; }
+    }
+
+    @media (max-width: 480px) {
+      #grid-container { gap: 5px; }
+      .column { width: calc((100% - 20px) / 1); }
+      #company-name { font-size: 24px; top: calc(50% - 60px); }
+      #search-bar { width: 250px; padding: 10px 20px; }
+      #search-input { font-size: 14px; padding: 8px 12px; }
+      #search-button { font-size: 12px; padding: 8px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="company-name">AI Career Nexus</div>
+  <div id="search-container">
+    <form id="search-form">
+      <div id="search-bar">
+        <input type="text" id="search-input" placeholder="Search..." required>
+        <button type="submit" id="search-button">Search</button>
+      </div>
+      <div id="search-text">Where Innovation Meets Opportunity</div>
+    </form>
+  </div>
+  <div id="grid-container"></div>
+
+  <!-- CV Modal -->
+  <div id="overlay"></div>
+  <div id="cv-modal">
+    <h2>CV Preview</h2>
+    <p>This is a placeholder for the CV content.</p>
+    <button id="close-modal">Close</button>
+  </div>
+
+  <script>
+    const gridContainer = document.getElementById('grid-container');
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const cvModal = document.getElementById('cv-modal');
+    const overlay = document.getElementById('overlay');
+    const closeModalButton = document.getElementById('close-modal');
+
+    const people = [
+      { name: "John Doe", job: "Web Developer", contact: "john.doe@example.com", cv: "john-doe-cv.pdf" },
+      { name: "Jane Smith", job: "Data Scientist", contact: "jane.smith@example.com", cv: "jane-smith-cv.pdf" },
+      { name: "Alice Johnson", job: "AI Engineer", contact: "alice.johnson@example.com", cv: "alice-johnson-cv.pdf" },
+      { name: "Bob Brown", job: "Software Developer", contact: "bob.brown@example.com", cv: "bob-brown-cv.pdf" },
+      { name: "Charlie Davis", job: "Machine Learning Specialist", contact: "charlie.davis@example.com", cv: "charlie-davis-cv.pdf" },
+      { name: "Eva Wilson", job: "Research Scientist", contact: "eva.wilson@example.com", cv: "eva-wilson-cv.pdf" },
+    ];
+
+    function createProfile(person) {
+      const profile = document.createElement('div');
+      profile.classList.add('scroll-div');
+
+      profile.innerHTML = `
+        <figure>
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-person-fill text-white" viewBox="0 0 16 16">
+            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+          </svg>
+        </figure>
+        <h2>${person.name}</h2>
+        <p>${person.job}</p>
+        <div class="buttons">
+          <a class="cv" href="#">CV</a>
+        </div>
+      `;
+
+      profile.querySelector('.cv').addEventListener('click', () => {
+        cvModal.style.display = 'block';
+        overlay.style.display = 'block';
+      });
+
+      return profile;
+    }
+
+    function createColumn(scrollDirection, startIndex) {
+      const column = document.createElement('div');
+      column.classList.add('column');
+
+      for (let i = 0; i < 3; i++) {
+        const profile = createProfile(people[(startIndex + i) % people.length]);
+        profile.style.animation = `${scrollDirection === 'down' ? 'scrollDown' : 'scrollUp'} 30s linear ${i * 10}s infinite`;
+        profile.style.transform = scrollDirection === 'down' ? 'translateY(-100%)' : 'translateY(100vh)';
+        column.appendChild(profile);
+      }
+
+      return column;
+    }
+
+    function generateColumns() {
+      gridContainer.innerHTML = '';
+      const numColumns = window.innerWidth <= 480 ? 1 : window.innerWidth <= 768 ? 3 : 6;
+
+      for (let i = 0; i < numColumns; i++) {
+        const scrollDirection = i % 2 === 0 ? 'down' : 'up';
+        gridContainer.appendChild(createColumn(scrollDirection, i * 3));
+      }
+    }
+
+    generateColumns();
+    window.addEventListener('resize', generateColumns);
+
+    searchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const searchTerm = searchInput.value.trim().toLowerCase();
+
+      if (searchTerm) {
+        document.body.classList.add('transition-effect');
+        setTimeout(() => {
+          window.location.href = `page2.html?search=${encodeURIComponent(searchTerm)}`;
+        }, 1000);
+      } else {
+        alert("Please enter a search term.");
+      }
+    });
+
+    closeModalButton.addEventListener('click', () => {
+      cvModal.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+
+    overlay.addEventListener('click', () => {
+      cvModal.style.display = 'none';
+      overlay.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

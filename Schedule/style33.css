@@ -1,0 +1,100 @@
+body {
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #fff5f5; /* Soft pink background */
+    margin: 0;
+    /* overflow: hidden; */ /* Removed to allow scrolling */
+    color: #4a4a4a; /* Soft dark gray for text */
+}
+
+.dashboard {
+    width: 90%;
+    max-width: 1200px;
+    background-color: #ffffff; /* White background for contrast */
+    border: 1px solid #ffcccc; /* Soft pink border */
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.1); /* Soft pink shadow */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+    grid-template-rows: auto; /* Allow rows to grow dynamically */
+    gap: 25px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    min-height: 80vh; /* Minimum height to fit content */
+}
+
+.card {
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.1); /* Soft pink shadow */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 5px; /* Padding set to 5px */
+    text-align: center;
+    height: 100%;
+    border: 1px solid #ffcccc; /* Soft pink border */
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(255, 107, 107, 0.2); /* Slightly stronger pink shadow on hover */
+}
+
+.card button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff; /* White text */
+    background-color: #ff6b6b; /* Soft strawberry red */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    max-width: 150px;
+    white-space: normal;
+    word-wrap: break-word;
+    font-weight: 500; /* Medium weight for buttons */
+}
+
+.card button.red {
+    background-color: #ff0000; /* Dangerous red */
+    cursor: not-allowed;
+}
+
+.card button.orange {
+    background-color: #ffa94d; /* Soft orange */
+}
+
+.card.add-activity button {
+    background-color: #6bff6b; /* Soft green */
+}
+
+.card.add-activity button:hover {
+    background-color: #5ae85a; /* Slightly darker green on hover */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 800px) {
+    .dashboard {
+        grid-template-columns: repeat(3, 1fr); /* Switch to 3 columns */
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .dashboard {
+        grid-template-columns: 1fr; /* Single column for very small screens */
+    }
+}

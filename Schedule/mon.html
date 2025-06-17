@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monday Schedule</title>
+    <link id="style-link" rel="stylesheet" href="">
+    <script>
+        let activities = []; // Define the activities array
+    
+        // Function to apply the corresponding day-specific style
+        function applyStyle(style) {
+            const styleLink = document.getElementById('style-link');
+            if (style && style.startsWith('style')) {
+                // Extract the number from the style string (e.g., style1 -> 1)
+                const styleNumber = style.replace('style', '');
+                // Construct the CSS filename (e.g., style1 -> style11.css)
+                const cssFile = `style${styleNumber}${styleNumber}.css`;
+                console.log(`Applying style: ${cssFile}`); // Debugging log
+                styleLink.href = cssFile;
+            } else {
+                // Default to a fallback style if no valid style is found
+                console.log('No valid style found. Applying fallback style: style11.css'); // Debugging log
+                styleLink.href = 'style11.css'; // Fallback CSS file
+            }
+        }
+    
+        // Function to toggle button color
+        function toggleColor(button) {
+            if (button.classList.contains('orange')) {
+                button.classList.remove('orange');
+                button.classList.add('green'); // Add the 'green' class
+            } else {
+                button.classList.add('orange');
+                button.classList.remove('green'); // Remove the 'green' class
+            }
+        }
+    
+        // Function to initialize all buttons as green
+        function initializeButtons() {
+            const buttons = document.querySelectorAll('.card button:not(.red)');
+            buttons.forEach(button => {
+                button.classList.add('green'); // Add the 'green' class
+            });
+        }
+    
+        // Function to add a new activity
+        function addActivity() {
+            const activityName = prompt("Enter the name of the activity:");
+            if (activityName) {
+                const time = prompt("Enter the time for the activity (e.g., 11:00 AM):");
+                if (time) {
+                    // Add the activity to the array
+                    activities.push({ name: activityName, time: time });
+    
+                    // Create a new card for the activity
+                    const dashboard = document.getElementById('dashboard');
+                    const newCard = document.createElement('div');
+                    newCard.classList.add('card');
+                    newCard.innerHTML = `
+                        <h3>${time}</h3>
+                        <button onclick="toggleColor(this)">${activityName}</button>
+                    `;
+    
+                    // Insert the new card before the "Add Activity" card
+                    dashboard.insertBefore(newCard, dashboard.lastElementChild);
+    
+                    // Initialize the new button as green
+                    const newButton = newCard.querySelector('button');
+                    newButton.classList.add('green'); // Use the 'green' class
+                }
+            }
+        }
+    
+        // Apply the style and initialize buttons on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set a default value for selectedStyle in sessionStorage (if not already set)
+            if (!sessionStorage.getItem('selectedStyle')) {
+                sessionStorage.setItem('selectedStyle', 'style1'); // Default to style1
+            }
+    
+            // Retrieve the selected style from sessionStorage
+            const style = sessionStorage.getItem('selectedStyle');
+            console.log(`Retrieved style from sessionStorage: ${style}`); // Debugging log
+            applyStyle(style);
+    
+            // Initialize all buttons as green
+            initializeButtons();
+        });
+    </script>
+</head>
+<body>
+    <div class="dashboard" id="dashboard">
+        <!-- 6:30 AM -->
+        <div class="card">
+            <h3>6:00 AM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 7:00 AM -->
+        <div class="card">
+            <h3>7:00 AM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 8:00 AM -->
+        <div class="card">
+            <h3>8:00 AM</h3>
+            <button class="red">Deadlines</button>
+        </div>
+        <!-- 10:00 AM -->
+        <div class="card">
+            <h3>10:00 AM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 11:30 AM -->
+        <div class="card">
+            <h3>11:30 AM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 11:45 AM -->
+        <div class="card">
+            <h3>11:45 AM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 1:15 PM -->
+        <div class="card">
+            <h3>1:15 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 2:00 PM -->
+        <div class="card">
+            <h3>2:00 PM</h3>
+            <button class="red">Deadlines</button>
+        </div>
+        <!-- 4:00 PM -->
+        <div class="card">
+            <h3>4:00 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 5:00 PM -->
+        <div class="card">
+            <h3>5:00 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 5:30 PM -->
+        <div class="card">
+            <h3>5:30 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 6:30 PM -->
+        <div class="card">
+            <h3>6:30 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 7:00 PM -->
+        <div class="card">
+            <h3>7:00 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 8:30 PM -->
+        <div class="card">
+            <h3>8:30 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 8:45 PM -->
+        <div class="card">
+            <h3>8:45 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 9:45 PM -->
+        <div class="card">
+            <h3>9:45 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 10:15 PM -->
+        <div class="card">
+            <h3>10:15 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- 10:30 PM -->
+        <div class="card">
+            <h3>10:30 PM</h3>
+            <button onclick="toggleColor(this)">Task</button>
+        </div>
+        <!-- Add Activity Button -->
+        <div class="card add-activity">
+            <h3>Add Activity</h3>
+            <button onclick="addActivity()">+</button>
+        </div>
+    </div>
+</body>
+</html>

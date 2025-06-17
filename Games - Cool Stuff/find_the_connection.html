@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Connection Generator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle, #1a1a1a, black);
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .connection-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      max-width: 600px;
+      line-height: 1.6;
+      backdrop-filter: blur(5px);
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      color: white;
+      background: #ff6f61;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    button:hover {
+      background: #ff3b2f;
+      transform: scale(1.05);
+    }
+    .item {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random Connection Generator</h1>
+  <div class="connection-box">
+    <div id="item1" class="item">?</div>
+    <div id="item2" class="item">?</div>
+    <p>Can you find a connection between these two?</p>
+  </div>
+  <button onclick="generateConnection()">Generate Connection</button>
+
+  <script>
+    const items = [
+      "a toaster", "the moon", "a paperclip", "a giraffe", "a snowflake",
+      "a traffic light", "a banana peel", "a black hole", "a pair of socks",
+      "a chessboard", "a thunderstorm", "a rubber duck", "a clock tower",
+      "a ladder", "a magnifying glass", "a jellyfish", "a piano key",
+      "a rainbow", "a pencil sharpener", "a spider web", "a teapot",
+      "a compass", "a feather", "a flashlight", "a sandcastle", "a firefly",
+      "a vending machine", "a kite", "a paintbrush", "a shadow", "a cloud",
+      "a stapler", "a lighthouse", "a mushroom", "a bicycle", "a telescope",
+      "a candle", "a waterfall", "a cactus", "a yo-yo", "a fountain pen",
+      "a seashell", "a starfish", "a hammock", "a windmill", "a coffee mug",
+      "a camera", "a roller skate", "a kaleidoscope", "a mailbox", "a glacier",
+      "a boomerang", "a chandelier", "a parachute", "a saxophone", "a dream",
+      "a thunderbolt", "a puzzle piece", "a matchstick", "a hot air balloon",
+      "a pocket watch", "a sunflower", "a lightning rod", "a mirror", "a spoon",
+      "a skyscraper", "a butterfly", "a satellite", "a volcano", "a dandelion",
+      "a microphone", "a snowman", "a horseshoe", "a compass rose", "a pinecone",
+      "a jigsaw puzzle", "a pebble", "a harp", "a fire hydrant", "a constellation",
+      "a skateboard", "a barometer", "a marionette", "a grain of sand", "a sundial",
+      "a scarf", "a surfboard", "a jack-in-the-box", "a bubble", "a zebra crossing",
+      "a kale leaf", "a bowtie", "a doorknob", "a dreamcatcher", "a metronome",
+      "a quill", "a Ferris wheel", "a bonsai tree", "a slinky", "a xylophone",
+      "a tumbleweed", "a periscope", "a penguin", "a Rubik's cube", "a sundae",
+      "a lighthouse beam", "a spinning top", "a trampoline", "a dragonfly", "a prism",
+      "a pocketknife", "a gingerbread house", "a compass needle", "a jellybean",
+      "a lava lamp", "a wishing well", "a kaleidoscope lens", "a daisy chain",
+      "a snow globe", "a kaleidoscope pattern", "a seagull", "a pinwheel", "a lantern",
+      "a snail shell", "a kaleidoscope tube", "a sand dollar", "a kaleidoscope image",
+      "a kaleidoscope reflection", "a kaleidoscope design", "a kaleidoscope swirl",
+      "a kaleidoscope mosaic", "a kaleidoscope fragment", "a kaleidoscope shard",
+      "a kaleidoscope sparkle", "a kaleidoscope glimmer", "a kaleidoscope shimmer",
+      "a kaleidoscope glow", "a kaleidoscope twinkle", "a kaleidoscope flash",
+      "a kaleidoscope burst", "a kaleidoscope dazzle", "a kaleidoscope brilliance"
+    ];
+
+    function generateConnection() {
+      const randomIndex1 = Math.floor(Math.random() * items.length);
+      let randomIndex2 = Math.floor(Math.random() * items.length);
+
+      // Ensure the two items are different
+      while (randomIndex2 === randomIndex1) {
+        randomIndex2 = Math.floor(Math.random() * items.length);
+      }
+
+      document.getElementById('item1').textContent = items[randomIndex1];
+      document.getElementById('item2').textContent = items[randomIndex2];
+    }
+  </script>
+</body>
+</html>

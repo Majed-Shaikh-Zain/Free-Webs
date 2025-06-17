@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Screen of Death</title>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        /* Full-screen RSOD styling */
+        body {
+            display: flex;
+            justify-content: flex-start; /* Align to the left */
+            align-items: flex-start; /* Align to the top */
+            height: 100vh; /* Full viewport height */
+            background-color: #8B0000; /* Dark red background */
+            color: white;
+            font-family: "Lucida Console", "Courier New", monospace;
+            font-size: 17px; /* Slightly larger base font size */
+            line-height: 1.4;
+            padding: 20px 55px 35px 55px; /* Adjusted padding: top is smaller, bottom is larger */
+            text-align: left; /* Align text to the left */
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* RSOD content container */
+        .rsod {
+            max-width: 800px;
+            width: 100%;
+            height: 100%; /* Take up full height of the body */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribute space evenly */
+        }
+
+        /* Main error message */
+        .rsod .message {
+            font-size: 19px; /* Slightly larger */
+            margin-bottom: 17px;
+        }
+
+        /* Steps and instructions */
+        .rsod .steps {
+            font-size: 17px; /* Slightly larger */
+            margin-bottom: 17px;
+        }
+
+        .rsod .steps ul {
+            padding-left: 20px;
+            margin-bottom: 17px;
+        }
+
+        .rsod .steps li {
+            margin-bottom: 10px; /* Slightly increased spacing */
+        }
+
+        /* Technical information */
+        .rsod .technical-info {
+            font-size: 15px; /* Slightly larger */
+            margin-bottom: 17px;
+        }
+
+        /* Crash dump status */
+        .rsod .crash-dump {
+            font-size: 15px; /* Slightly larger */
+            margin-bottom: 17px;
+        }
+
+        /* Contact info */
+        .rsod .contact-info {
+            font-size: 15px; /* Slightly larger */
+            margin-bottom: 0; /* No margin at the bottom */
+        }
+    </style>
+</head>
+<body>
+    <div class="rsod">
+        <div class="message">
+            A problem has been detected and Windows has been shut down to prevent damage to your computer.
+        </div>
+        <div class="message">
+            Modification of system code or a critical data structure was detected.
+        </div>
+        <div class="steps">
+            If this is the first time you've seen this stop error screen, restart your computer. If this screen appears again, follow these steps:
+            <ul>
+                <li>Check to make sure any new hardware or software is properly installed.</li>
+                <li>If this is a new installation, ask your hardware or software manufacturer for any Windows updates you might need.</li>
+                <li>If problems continue, disable or remove any newly installed hardware or software. Disable BIOS memory options such as caching or shadowing.</li>
+                <li>If you need to use Safe Mode to remove or disable components, restart your computer, press F8 to select Advanced Startup Options, and then select Safe Mode.</li>
+            </ul>
+        </div>
+        <div class="technical-info">
+            Technical information:
+            <br>
+            *** STOP: 0x00000109 (0xA3A039D98936C5AA, 0xB3B7465EE5039LCA, 0xFFFFFF800017600B0, 0x000000000000001)
+        </div>
+        <div class="crash-dump">
+            Collecting data for crash dump...
+            <br>
+            Initializing disk for crash dump...
+            <br>
+            Beginning dump of physical memory...
+            <br>
+            Dumping physical memory to disk: 100%
+            <br>
+            Physical memory dump complete.
+        </div>
+        <div class="contact-info">
+            Contact your system admin or technical support group for further assistance.
+        </div>
+    </div>
+</body>
+</html>

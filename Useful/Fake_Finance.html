@@ -1,0 +1,479 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Smart Money Tracker - Calculate and visualize your budget with the 45-35-20 rule">
+    <meta name="keywords" content="budget calculator, money management, financial planning, savings tracker">
+    <meta name="author" content="Smart Money Tracker">
+    <meta property="og:title" content="Smart Money Tracker">
+    <meta property="og:description" content="Calculate and visualize your budget with the 45-35-20 rule">
+    <meta property="og:type" content="website">
+    <title>Smart Money Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            min-height: 600px;
+            background: #1e293b;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Left Side: Explanation */
+        .explanation {
+            width: 45%;
+            background: #0f172a;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .explanation h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #ffd700, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 30px;
+        }
+
+        .explanation p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .explanation strong {
+            color: #f59e0b;
+        }
+
+        /* Right Side: Calculator */
+        .calculator {
+            width: 55%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #ffd700, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .input-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            background: #1e293b;
+            color: #f59e0b;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+        }
+
+        .results {
+            background: #0f172a;
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            margin-top: 20px;
+            line-height: 1.8;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .result-value {
+            font-size: 1.2rem;
+            color: #f59e0b;
+            font-weight: 700;
+        }
+
+        .subcategory {
+            padding-left: 25px;
+            opacity: 0.85;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            width: 100%;
+            height: 280px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results, .chart-container {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1000px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .explanation, .calculator {
+                width: 100%;
+                padding: 30px;
+            }
+            
+            .explanation {
+                padding-bottom: 10px;
+            }
+            
+            .calculator {
+                padding-top: 10px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            .explanation h1, h2 {
+                font-size: 1.8rem;
+            }
+            
+            .explanation p, label, input {
+                font-size: 1rem;
+            }
+            
+            .results {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Left Side: Explanation -->
+        <div class="explanation">
+            <h1>Smart Money Allocation</h1>
+            <p>Managing your money properly is crucial for financial freedom. This tool follows a <strong>45-35-20</strong> rule to distribute your income wisely.</p>
+            <p><strong>💰 45% Savings:</strong> Essential for future investments, emergency funds, and long-term growth.</p>
+            <p><strong>🏠 35% Needs:</strong> Covers all necessities like rent, food, bills, and daily expenses.</p>
+            <p><strong>🎮 20% Fun:</strong> Enjoy life! This section is for entertainment, divided into:</p>
+            <p>➝ <strong>15% Outdoor Fun:</strong> Traveling, dining out, sports.</p>
+            <p>➝ <strong>5% Online Games:</strong> Subscriptions, in-game purchases.</p>
+        </div>
+
+        <!-- Right Side: Calculator -->
+        <div class="calculator">
+            <h2>Calculate Your Budget</h2>
+            
+            <div class="input-container">
+                <label for="income">Enter Your Monthly Income (AED):</label>
+                <input type="number" id="income" placeholder="Enter amount..." oninput="calculateBudget()">
+            </div>
+            
+            <button id="printButton" onclick="printResults()" style="display: none; background: linear-gradient(45deg, #ffd700, #f59e0b); color: #0f172a; border: none; border-radius: 12px; padding: 12px 24px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 10px; transition: transform 0.2s;">
+                Print/Save Results 🖨️
+            </button>
+
+            <div class="results" id="results-container" style="display: none;">
+                <div class="result-item">
+                    <div class="result-label">💰 Savings (45%)</div>
+                    <div class="result-value"><span id="savings">0</span> AED</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">🏠 Necessities (35%)</div>
+                    <div class="result-value"><span id="needs">0</span> AED</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-label">🎮 Fun (20%)</div>
+                    <div class="result-value"><span id="fun">0</span> AED</div>
+                </div>
+                
+                <div class="result-item subcategory">
+                    <div class="result-label">➝ Outdoor (15%)</div>
+                    <div class="result-value"><span id="outdoor">0</span> AED</div>
+                </div>
+                
+                <div class="result-item subcategory">
+                    <div class="result-label">➝ Online Games (5%)</div>
+                    <div class="result-value"><span id="games">0</span> AED</div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="chart-container" style="display: none;">
+                <canvas id="budgetChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart; // Chart variable to update dynamically
+        
+        // Save the last entered income in localStorage
+        function saveToLocalStorage(income) {
+            localStorage.setItem('lastIncome', income);
+        }
+        
+        // Load the last entered income from localStorage
+        function loadFromLocalStorage() {
+            const lastIncome = localStorage.getItem('lastIncome');
+            if (lastIncome) {
+                document.getElementById("income").value = lastIncome;
+                calculateBudget();
+            }
+        }
+        
+        // Print or save the results as PDF
+        function printResults() {
+            window.print();
+        }
+        
+        // Export results as CSV
+        function exportCSV() {
+            let income = parseFloat(document.getElementById("income").value);
+            if (isNaN(income) || income <= 0) return;
+            
+            let savings = (income * 0.45).toFixed(2);
+            let needs = (income * 0.35).toFixed(2);
+            let fun = (income * 0.20).toFixed(2);
+            let outdoor = (income * 0.15).toFixed(2);
+            let games = (income * 0.05).toFixed(2);
+            
+            const csvContent = 
+                "Category,Amount (AED)\n" +
+                `Savings (45%),${savings}\n` +
+                `Necessities (35%),${needs}\n` +
+                `Fun (20%),${fun}\n` +
+                `Outdoor (15%),${outdoor}\n` +
+                `Online Games (5%),${games}`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "budget_allocation.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function calculateBudget() {
+            let income = parseFloat(document.getElementById("income").value);
+            if (isNaN(income) || income <= 0) {
+                document.getElementById("results-container").style.display = "none";
+                document.getElementById("chart-container").style.display = "none";
+                return;
+            }
+
+            let savings = (income * 0.45).toFixed(2);
+            let needs = (income * 0.35).toFixed(2);
+            let fun = (income * 0.20).toFixed(2);
+            let outdoor = (income * 0.15).toFixed(2);
+            let games = (income * 0.05).toFixed(2);
+
+            updateResults(savings, needs, fun, outdoor, games);
+            updateChart(savings, needs, outdoor, games);
+            
+            document.getElementById("results-container").style.display = "block";
+            document.getElementById("chart-container").style.display = "block";
+            document.getElementById("printButton").style.display = "block";
+            
+            // Save the income value to localStorage
+            saveToLocalStorage(income);
+        }
+
+        function updateResults(savings, needs, fun, outdoor, games) {
+            document.getElementById("savings").innerText = savings;
+            document.getElementById("needs").innerText = needs;
+            document.getElementById("fun").innerText = fun;
+            document.getElementById("outdoor").innerText = outdoor;
+            document.getElementById("games").innerText = games;
+        }
+
+        function updateChart(savings, needs, outdoor, games) {
+            let ctx = document.getElementById('budgetChart').getContext('2d');
+
+            if (chart) chart.destroy(); // Destroy previous chart before updating
+
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Savings (45%)', 'Needs (35%)', 'Outdoor Fun (15%)', 'Online Games (5%)'],
+                    datasets: [{
+                        data: [savings, needs, outdoor, games],
+                        backgroundColor: ['#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'],
+                        borderWidth: 0,
+                        borderRadius: 5,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#e2e8f0',
+                                font: {
+                                    size: 12,
+                                    family: "'Segoe UI', sans-serif",
+                                    weight: 'bold'
+                                },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: {
+                                size: 14,
+                                family: "'Segoe UI', sans-serif",
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                size: 14,
+                                family: "'Segoe UI', sans-serif"
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + ' AED';
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+    </script>
+    
+    <style media="print">
+        body {
+            background: white;
+            color: black;
+        }
+        
+        .main-container {
+            box-shadow: none;
+            display: block;
+            width: 100%;
+        }
+        
+        .explanation, .calculator {
+            width: 100%;
+            padding: 20px;
+            background: white;
+        }
+        
+        .explanation h1, h2 {
+            color: #f59e0b !important;
+            background: none;
+            -webkit-background-clip: initial;
+            background-clip: initial;
+        }
+        
+        #printButton, input {
+            display: none !important;
+        }
+        
+        .results {
+            background: white;
+            border: 1px solid #ddd;
+        }
+        
+        .result-label, .result-value {
+            color: black;
+        }
+        
+        .result-value {
+            color: #f59e0b;
+        }
+    </style>
+    
+    <script>
+        // Load saved income when page loads
+        window.addEventListener('load', loadFromLocalStorage);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Screen of Death</title>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            cursor: none;
+            box-sizing: border-box;
+        }
+
+        /* Full-screen GSOD styling */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center everything vertically */
+            height: 100vh;
+            background-color: #008000; /* Green background */
+            color: white;
+            font-family: "Perfect DOS VGA 437", "Courier New", monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        /* GSOD content container */
+        .gsod {
+            max-width: 640px;
+            width: 100%;
+            text-align: left; /* Left-align text inside the container */
+        }
+
+        /* Gray background for the word "Windows" */
+        .gsod .windows-title {
+            background-color: #C0C0C0; /* Light gray background */
+            color: #008000; /* Match the green background */
+            padding: 2px 10px; /* Wider padding for a larger gray box */
+            display: inline-block;
+            font-weight: bold;
+            text-align: center;
+            font-size: 18px; /* Slightly larger font */
+            margin-top: -50px; /* Move "Windows" higher up */
+            margin-bottom: 20px; /* Space below "Windows" */
+            margin-left: 272px; /* Position "Windows" */
+            text-transform: uppercase;
+        }
+
+        /* Main error message */
+        .gsod .message {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* Technical information */
+        .gsod .technical-info {
+            font-size: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* Center "Press any key to continue" */
+        .gsod .center-message {
+            text-align: center; /* Center the text */
+            margin-top: 20px; /* Add some space above */
+            font-size: 16px;
+        }
+
+        /* Retro pixelated effect */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1),
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none; /* Ensure clicks pass through */
+        }
+    </style>
+    <!-- Add a retro pixel font -->
+    <link href="https://fonts.cdnfonts.com/css/perfect-dos-vga-437" rel="stylesheet">
+</head>
+<body>
+    <div class="gsod">
+        <!-- Gray background for the word "Windows" -->
+        <div class="windows-title">Windows</div>
+
+        <div class="message">
+            An error has occurred. To continue:
+        </div>
+        <div class="message">
+            Press Enter to return to Windows, or
+        </div>
+        <div class="message">
+            Press CTRL+ALT+DEL to restart your computer. If you do this,
+        </div>
+        <div class="message">
+            you will lose any unsaved information in all open applications.
+        </div>
+        <div class="technical-info">
+            Error: 0E:016F:BFF9B3D4
+        </div>
+        <!-- Centered "Press any key to continue" -->
+        <div class="center-message">
+            Press any key to continue
+        </div>
+    </div>
+</body>
+</html>

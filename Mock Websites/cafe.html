@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Café Bliss</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4e9d8; /* Warm beige background */
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+      background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), #8b5a2b; /* Rich brown gradient */
+      color: #fff;
+    }
+    .hero-title {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .hero-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .cta-button {
+      background-color: #d4a574; /* Warm gold */
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: #b88c5f; /* Darker gold */
+    }
+
+    /* Menu Section */
+    .menu {
+      margin-top: 50px;
+      text-align: center;
+    }
+    .menu h2 {
+      font-size: 3rem;
+      margin-bottom: 30px;
+      color: #8b5a2b; /* Rich brown */
+    }
+    .menu-row {
+      display: flex;
+      justify-content: center; /* Center align items */
+      flex-wrap: wrap;
+      gap: 20px; /* Consistent spacing between items */
+    }
+    .menu-item {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 300px; /* Fixed width for consistency */
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .menu-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+    .menu-item h3 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #8b5a2b; /* Rich brown */
+    }
+    .menu-item p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+    .menu-details {
+      position: absolute;
+      bottom: -60px; /* Initially hidden below the card */
+      left: 0;
+      right: 0;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 0 0 10px 10px;
+      font-size: 0.9rem;
+      color: #666;
+      opacity: 0;
+      transition: opacity 0.3s ease, bottom 0.3s ease;
+    }
+    .menu-item:hover .menu-details {
+      bottom: 0; /* Slide up into view */
+      opacity: 1;
+    }
+
+    /* Testimonials */
+    .testimonials {
+      text-align: center;
+      margin-top: 50px;
+      background: #d4a574; /* Warm gold background */
+      padding: 60px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .testimonials h2 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+    .testimonial-text {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    .testimonial-author {
+      font-style: italic;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    /* Newsletter Section */
+    .newsletter {
+      text-align: center;
+      margin-top: 50px;
+      padding: 40px 20px;
+      background: #8b5a2b; /* Rich brown */
+      color: #fff;
+    }
+    .newsletter h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .newsletter form {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .newsletter input[type="email"] {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 300px;
+    }
+    .newsletter button {
+      background-color: #d4a574; /* Warm gold */
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .newsletter button:hover {
+      background-color: #b88c5f; /* Darker gold */
+    }
+
+    /* Contact Section */
+    .contact {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .contact h2 {
+      margin-bottom: 20px;
+    }
+    .contact p {
+      margin-bottom: 10px;
+    }
+    .email-link {
+      color: #d4a574; /* Warm gold */
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    .email-link:hover {
+      color: #b88c5f; /* Darker gold */
+    }
+
+    /* Social Media Links */
+    .social-media {
+      margin-top: 20px;
+    }
+    .social-media a {
+      color: #d4a574; /* Warm gold */
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+    .social-media a:hover {
+      color: #b88c5f; /* Darker gold */
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .menu-item {
+        width: calc(50% - 20px); /* Two items per row on smaller screens */
+      }
+    }
+    @media (max-width: 480px) {
+      .menu-item {
+        width: 100%; /* One item per row on very small screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1 class="hero-title">Café Bliss</h1>
+      <p class="hero-subtitle">Where every sip feels like home.</p>
+      <button class="cta-button">Explore Menu</button>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu">
+      <h2>Our Beloved Recipes</h2>
+      <div class="menu-row">
+        <div class="menu-item">
+          <h3>Espresso</h3>
+          <p>A rich, bold shot of pure coffee bliss.</p>
+          <div class="menu-details">
+            <p><strong>Price:</strong> $3.50</p>
+            <p><strong>Ingredients:</strong> Espresso beans, water</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <h3>Latte</h3>
+          <p>Silky smooth with a hint of sweetness.</p>
+          <div class="menu-details">
+            <p><strong>Price:</strong> $4.00</p>
+            <p><strong>Ingredients:</strong> Espresso, steamed milk</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <h3>Cappuccino</h3>
+          <p>Foamy and flavorful, perfect for mornings.</p>
+          <div class="menu-details">
+            <p><strong>Price:</strong> $4.25</p>
+            <p><strong>Ingredients:</strong> Espresso, steamed milk, foam</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <h3>Americano</h3>
+          <p>Strong and simple, just like you love it.</p>
+          <div class="menu-details">
+            <p><strong>Price:</strong> $3.75</p>
+            <p><strong>Ingredients:</strong> Espresso, hot water</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <h3>Mocha</h3>
+          <p>A chocolatey twist on your favorite coffee.</p>
+          <div class="menu-details">
+            <p><strong>Price:</strong> $4.50</p>
+            <p><strong>Ingredients:</strong> Espresso, steamed milk, chocolate syrup</p>
+          </div>
+        </div>
+        <div class="menu-item">
+          <h3>Croissant</h3>
+          <p>Flaky, buttery perfection baked fresh daily.</p>
+          <div class="menu-details">
+            <p><strong>Price:</strong> $2.50</p>
+            <p><strong>Ingredients:</strong> Flour, butter, yeast</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+      <h2>What Our Customers Say</h2>
+      <div class="testimonial-text" id="testimonial-text">
+        "The best coffee I've ever had! Cozy atmosphere too."
+      </div>
+      <div class="testimonial-author" id="testimonial-author">
+        - Sarah L.
+      </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+      <h2>Join Our Mailing List</h2>
+      <form action="/subscribe" method="POST">
+        <input type="email" placeholder="Enter your email" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact">
+      <h2>Visit Us</h2>
+      <p>123 Coffee Lane, Brewtown</p>
+      <p>Open Daily: 7 AM - 7 PM</p>
+      <a href="mailto:info@cafebliss.com" class="email-link">Email Us</a>
+      <div class="social-media">
+        <a href="https://instagram.com/cafebliss" target="_blank">Instagram</a>
+        <a href="https://facebook.com/cafebliss" target="_blank">Facebook</a>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Automatic Testimonial Slider Logic
+    const testimonials = [
+      { text: "The best coffee I've ever had! Cozy atmosphere too.", author: "- Sarah L." },
+      { text: "Their croissants are heavenly. Can't get enough!", author: "- James K." },
+      { text: "A hidden gem in the city. Love everything here.", author: "- Emily R." }
+    ];
+    const testimonialText = document.getElementById('testimonial-text');
+    const testimonialAuthor = document.getElementById('testimonial-author');
+    let currentIndex = 0;
+
+    function updateTestimonial() {
+      testimonialText.style.opacity = 0;
+      testimonialAuthor.style.opacity = 0;
+      setTimeout(() => {
+        testimonialText.textContent = testimonials[currentIndex].text;
+        testimonialAuthor.textContent = testimonials[currentIndex].author;
+        testimonialText.style.opacity = 1;
+        testimonialAuthor.style.opacity = 1;
+        currentIndex = (currentIndex + 1) % testimonials.length;
+      }, 500);
+    }
+
+    setInterval(updateTestimonial, 5000);
+    updateTestimonial();
+  </script>
+</body>
+</html>

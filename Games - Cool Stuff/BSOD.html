@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blue Screen of Death</title>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        /* Full-screen BSOD styling */
+        body {
+            display: flex;
+            justify-content: flex-start; /* Align to the left */
+            align-items: flex-start; /* Align to the top */
+            height: 100vh;
+            background-color: #0078D7; /* Classic BSOD blue */
+            color: white;
+            font-family: "Lucida Console", "Courier New", monospace;
+            font-size: 24px; /* Increased base font size */
+            line-height: 1.5;
+            padding: 60px 80px; /* Adjusted padding to move content further from the corner */
+            text-align: left; /* Align text to the left */
+        }
+
+        /* BSOD content container */
+        .bsod {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* Frowny face */
+        .bsod h1 {
+            font-size: 64px; /* Larger frowny face */
+            margin-bottom: 30px;
+        }
+
+        /* Main error message */
+        .bsod .message {
+            font-size: 32px; /* Larger font size */
+            margin-bottom: 30px;
+        }
+
+        /* Additional info */
+        .bsod .info {
+            font-size: 24px; /* Larger font size */
+            margin-bottom: 15px;
+        }
+
+        /* Progress text */
+        .bsod .progress {
+            font-size: 24px; /* Larger font size */
+            margin-top: 30px;
+        }
+
+        /* Extra margin for support info and link */
+        .bsod .support-info {
+            margin-top: 40px; /* Added extra margin to move these lines further down */
+        }
+
+        /* Link styling */
+        .bsod a {
+            color: #ccc;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="bsod">
+        <h1>:(</h1>
+        <div class="message">
+            Your PC ran into a problem and needs to restart. We're just collecting some error info, and then we'll restart for you.
+        </div>
+        <div class="progress">
+            99% complete
+        </div>
+        <div class="info support-info">
+            If you call a support person, give them this info:
+        </div>
+        <div class="info">
+            Stop code: CRITICAL_PROCESS_DIED
+        </div>
+        <div class="info">
+            For more information about this issue and possible fixes, visit <a href="https://windows.com/stopcode" target="_blank">https://windows.com/stopcode</a>
+        </div>
+    </div>
+</body>
+</html>

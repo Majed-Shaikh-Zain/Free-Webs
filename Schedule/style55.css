@@ -1,0 +1,98 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #1e1e2f;
+    margin: 0;
+    /* overflow: hidden; */ /* Removed to allow scrolling */
+}
+
+.dashboard {
+    width: 90%;
+    max-width: 1200px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive columns */
+    grid-template-rows: auto; /* Allow rows to grow dynamically */
+    gap: 25px;
+    overflow-y: auto; /* Allow vertical scrolling */
+    min-height: 80vh; /* Minimum height to fit content */
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 5px; /* Padding set to 5px */
+    text-align: center;
+    height: 100%;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.3);
+}
+
+.card button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    max-width: 150px;
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+.card button.red {
+    background-color: #ff3b3b;
+    cursor: not-allowed;
+}
+
+.card button.orange {
+    background-color: #ff8c42;
+}
+
+.card.add-activity button {
+    background-color: #bb86fc;
+}
+
+.card.add-activity button:hover {
+    background-color: #9a67d6;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 800px) {
+    .dashboard {
+        grid-template-columns: repeat(3, 1fr); /* Switch to 3 columns */
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* Switch to 2 columns */
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .dashboard {
+        grid-template-columns: 1fr; /* Single column for very small screens */
+    }
+}

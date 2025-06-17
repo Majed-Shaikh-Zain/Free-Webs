@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* General Styles */
+        * {
+            box-sizing: border-box; /* Ensure consistent sizing for all elements */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #0a0a0a;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Gradient Background Animation */
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #2a2a2a);
+            background-size: 200% 200%;
+            animation: gradientBackground 10s ease infinite;
+            z-index: -1;
+        }
+
+        /* Login Container */
+        .login-container {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Logo */
+        .logo {
+            width: 80px;
+            height: 80px;
+            background-color: #00ffcc;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Title */
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: #00ffcc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Subtitle */
+        p {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        /* Input Fields */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #1a1a1a;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #00ffcc;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        /* Login Button */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background-color: #00ffcc;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #00e6b8;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: #ff4444;
+            margin-top: 10px;
+            display: none;
+            font-size: 14px;
+        }
+
+        /* Glow Effect */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 204, 0.2), transparent 70%);
+            animation: rotateGlow 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotateGlow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo -->
+        <div class="logo">L</div>
+        <!-- Title -->
+        <h1>Login</h1>
+        <!-- Subtitle -->
+        <p>I Dont think theres even a correct password so dont waste your time..</p>
+        <!-- Login Form -->
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <!-- Error Message -->
+        <div class="error-message" id="error-message">Invalid username or password. Please try again.</div>
+    </div>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // Get the entered username and password
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Always show the error message
+            document.getElementById("error-message").style.display = "block";
+
+            // Clear the form fields
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        });
+    </script>
+</body>
+</html>
